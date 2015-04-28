@@ -1,5 +1,5 @@
 import unittest
-from static_map_generator.static_map_generator import StaticMapGenerator
+from static_map_generator.generator import Generator
 
 
 class MapMakerTests(unittest.TestCase):
@@ -64,7 +64,7 @@ class MapMakerTests(unittest.TestCase):
                  ]
         }
 
-        StaticMapGenerator.generate(config_31370)
+        Generator.generate(config_31370)
 
 
         config_4326 = {
@@ -119,4 +119,4 @@ class MapMakerTests(unittest.TestCase):
                   }
                  ]
         }
-        StaticMapGenerator.generate(config_4326)
+        Generator.generate(config_4326)

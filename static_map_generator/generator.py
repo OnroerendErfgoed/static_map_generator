@@ -5,7 +5,7 @@ from static_map_generator.renderer import Renderer
 from static_map_generator.utils import combine_layers, merge_dicts, convert_filetype
 
 
-class StaticMapGenerator():
+class Generator():
 
     @staticmethod
     def generate(config):
