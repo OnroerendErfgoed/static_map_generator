@@ -5,29 +5,23 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.rst')) as f:
     README = f.read()
-with open(os.path.join(here, 'CHANGES.txt')) as f:
+with open(os.path.join(here, 'CHANGES.rst')) as f:
     CHANGES = f.read()
 
 requires = [
-    'Shapely',
-    'Wand',
-    'mapnik2',
-    'argparse',
-    'requests',
-    'tempdir'
     ]
 
 setup(name='static_map_generator',
-      version='0.0.0-dev',
+      version='0.0.0.dev',
       description='static_map_generator',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
-        "Programming Language :: Python"
+        "Programming Language :: Python",
         ],
-      author='',
-      author_email='',
+      author='Flanders Heritage Agency',
+      author_email='ict@onroerenderfgoed.be',
       url='',
-      keywords='python static map generator',
+      keywords='',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,

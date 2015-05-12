@@ -51,10 +51,8 @@ def merge_dicts(*dict_args):
 
 
 def convert_filetype(filename_ori, filename_res, filetype):
-    try:
-        original = Image(filename=filename_ori)
-        with original.convert(filetype) as converted:
-            converted.save(filename=filename_res)
-    except WandException as e:  # pragma: no cover
-        pass
+    original = Image(filename=filename_ori)
+    with original.convert(filetype) as converted:
+        converted.save(filename=filename_res)
+
 
