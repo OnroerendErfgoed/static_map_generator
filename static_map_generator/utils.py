@@ -33,10 +33,9 @@ def combine_layers(images, filename):
 #
 #     combo.save("result.png")
 
-
-def create_buffer(wkt, buffer):
-    geom = loads(wkt)
-    return geom.buffer(buffer)
+# def create_buffer(wkt, buffer):
+#     geom = loads(wkt)
+#     return geom.buffer(buffer)
 
 
 def merge_dicts(*dict_args):
