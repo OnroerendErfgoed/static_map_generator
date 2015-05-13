@@ -34,11 +34,11 @@ class Renderer():
             return DefaultRenderer()
 
     @abstractmethod
-    def render(self, **kwargs):
+    def render(self, **kwargs):     # pragma: no cover
         pass
 
     @abstractmethod
-    def type(self):
+    def type(self):                 # pragma: no cover
         pass
 
 
@@ -129,19 +129,31 @@ class LogoRenderer(Renderer):
 
 
 class GeojsonRenderer(Renderer):
+    def render(self, **kwargs):
+        raise NotImplementedError("This method is not yet implemented")
+
     def type(self):
         return "geojson"
 
 
 class ScaleRenderer(Renderer):
+    def render(self, **kwargs):
+        raise NotImplementedError("This method is not yet implemented")
+
     def type(self):
         return "scale"
 
 
 class LegendRenderer(Renderer):
+    def render(self, **kwargs):
+        raise NotImplementedError("This method is not yet implemented")
+
     def type(self):
         return "legend"
 
 class DefaultRenderer(Renderer):
+    def render(self, **kwargs):
+        raise NotImplementedError("This method is not yet implemented")
+
     def type(self):
         return "default"
