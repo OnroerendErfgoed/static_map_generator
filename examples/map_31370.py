@@ -15,8 +15,6 @@ config_31370 = {
             'type': 'text',
             'name': 'text.png',
             'text': 'This is a test',
-            'color': '#FF3366',
-            'borderwidth': 1,
             'font_size': 24,
             'text_color': '#FF3366'
         }

@@ -106,9 +106,8 @@ class WktRenderer(Renderer):
 
 class TextRenderer(Renderer):
     def render(self, **kwargs):
-        with Image(width=kwargs['width'] - 2 * kwargs['borderwidth'],
-                   height=kwargs['height'] - 2 * kwargs['borderwidth']) as image:
-            # image.border(Color(bordercolor),borderwidth,borderwidth)
+        with Image(width=kwargs['width'],
+                   height=kwargs['height']) as image:
             font = Font(path='/Library/Fonts/Verdana.ttf', size=kwargs['font_size'], color=Color(kwargs['text_color']))
             image.caption(kwargs['text'], left=0, top=0, width=kwargs['width'] - 10, height=kwargs['height'] - 5,
                           font=font, gravity='center')
