@@ -7,14 +7,14 @@ config_simple = {
         'filetype': 'png',
         'width': 500,
         'height': 500,
-        'bbox': [4, 50, 5, 51]
+        'bbox': [4.95, 50.95, 5, 51]
     },
     'layers':
         [{'layer': {
             'type': 'text',
             'name': 'text.png',
             'text': 'This is a test',
-            'font_size': 24,
+            'font_size': 40,
             'text_color': '#FF3366'
         }
 
@@ -22,7 +22,7 @@ config_simple = {
             {'layer': {
                 'type': 'wkt',
                 'name': 'WKT',
-                'wkt': 'POLYGON ((4.5 50.2, 5 50.2, 5 50, 4.5 50.2))',
+                'wkt': 'POLYGON ((4.99 50.99, 4.995 50.99, 4.995 50, 4.99 50.99))',
                 'color': 'steelblue',
                 'opacity': 0.5
             }

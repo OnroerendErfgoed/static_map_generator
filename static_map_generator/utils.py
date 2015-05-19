@@ -2,6 +2,13 @@ from shapely.wkt import loads
 from wand.exceptions import WandException
 from wand.image import Image
 
+def draw_line():
+    from PIL import Image as PILImage, ImageDraw as PILImageDraw
+    im = PILImage.new('RGBA', (400, 400), (0, 255, 0, 0))
+    draw = PILImageDraw.Draw(im)
+    draw.line((100, 200, 150, 300), fill=128, width=3)
+    im.save("result.png")
+
 def combine_layers(images, filename):
     combo = None
     for index, im in enumerate(images):
@@ -36,6 +43,8 @@ def combine_layers(images, filename):
 # def create_buffer(wkt, buffer):
 #     geom = loads(wkt)
 #     return geom.buffer(buffer)
+
+
 
 
 def merge_dicts(*dict_args):
