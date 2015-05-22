@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from geomet import wkt
 
 from requests import ConnectionError
 import requests
@@ -70,12 +71,10 @@ class WmsRenderer(Renderer):
         with open(kwargs['filename'], 'wb') as im:
                 im.write(res.content)
 
-
     def type(self):
         return "wms"
 
 class WktRenderer(Renderer):
-
     def render(self, **kwargs):
         m = mapnik.Map(kwargs['width'], kwargs['height'], '+init=epsg:' + str(kwargs['epsg']))
         s = mapnik.Style()
@@ -127,9 +126,10 @@ class LogoRenderer(Renderer):
         return "logo"
 
 
-class GeojsonRenderer(Renderer):
+class GeojsonRenderer(WktRenderer):
     def render(self, **kwargs):
-        raise NotImplementedError("This method is not yet implemented")
+        kwargs['wkt'] = wkt.dumps(kwargs['geojson'])
+        WktRenderer.render(self, **kwargs)
 
     def type(self):
         return "geojson"

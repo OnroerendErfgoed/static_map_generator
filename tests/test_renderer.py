@@ -11,7 +11,7 @@ class UtilsTests(unittest.TestCase):
     def setUp(self):
         self.tempdir = tempdir.TempDir()
         self.here = os.path.abspath(os.path.dirname(__file__))
-        self.file_path = os.path.join(self.tempdir.name, 'filepath.jpg')
+        self.file_path = os.path.join(self.tempdir.name, 'filepath')
 
     def tearDown(self):
         pass
@@ -114,7 +114,33 @@ class UtilsTests(unittest.TestCase):
         renderer = Renderer.factory("geojson")
         self.assertIsInstance(renderer, GeojsonRenderer)
         self.assertEquals(renderer.type(), "geojson")
-        self.assertRaises(NotImplementedError, renderer.render)
+
+    def test_geojson_renderer_render(self):
+        renderer = Renderer.factory("geojson")
+        renderer.render(
+            **{
+            'type': 'geojson',
+            'name': 'geojson.png',
+            'opacity': 0.5,
+            'filename': self.file_path,
+            'epsg': 31370,
+            'filetype': 'png',
+            'width': 500,
+            'height': 500,
+            'color': 'steelblue',
+            'geojson':{
+                "type":"MultiPolygon",
+                "coordinates":[[[[103827.44321801752,192484.5100535322],[103826.65621839411,192565.57026445214],[103839.2000972359,192622.4958831761],[103877.27257229008,192673.1911981115],[103981.90807816133,192592.71585010737],[104050.62835409257,192535.07265175506],[104119.78606355426,192526.95860514138],[104157.5529127745,192543.1371434061],[104163.33481632298,192516.068607972],[104043.86794770884,192451.07658289373],[103839.39232099024,192304.2814310426],[103825.49962980268,192434.99411542248],[103827.44321801752,192484.5100535322]]]],
+                "crs":{
+                "type":"name",
+                "properties":{
+                "name":"urn:ogc:def:crs:EPSG::31370"}}},
+            'bbox': [100000, 100000, 200000, 200000]
+         }
+        )
+        self.assertTrue(os.path.isfile(self.file_path))
+        image = Image(filename=self.file_path)
+        self.assertIsInstance(image, Image)
 
     def test_scale_renderer(self):
         renderer = Renderer.factory("scale")
