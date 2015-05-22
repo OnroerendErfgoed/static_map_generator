@@ -1,10 +1,4 @@
-import argparse
 import os
-import wand
-import wsgiref
-import geomet
-import mapnik2
-import requests
 
 from setuptools import setup, find_packages
 import tempdir
@@ -16,15 +10,13 @@ with open(os.path.join(here, 'README.rst')) as f:
 #     CHANGES = f.read()
 CHANGES = "changes"
 
-requires = [
-      geomet,
-      mapnik2,
-      wand,
-      argparse,
-      requests,
-      tempdir,
-      wsgiref
-    ]
+requires = ['geomet',
+      'mapnik2',
+      'Wand',
+      'argparse',
+      'requests',
+      'tempdir',
+      'wsgiref']
 
 setup(name='static_map_generator',
       version='0.0.0.dev',
