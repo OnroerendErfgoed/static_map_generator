@@ -6,5 +6,3 @@ mapnik2==2.2.0
 requests==2.6.0
 tempdir==0.6
 wsgiref==0.1.2
-
--e git+https://github.com/geomet/geomet.git#egg=geomet
