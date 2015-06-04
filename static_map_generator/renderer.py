@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from geomet import wkt
+#from geomet import wkt
 
 from requests import ConnectionError
 import requests
@@ -9,7 +9,7 @@ import mapnik
 from wand.color import Color
 from wand.image import Image
 from wand.image import Font
-from static_map_generator.utils import merge_dicts
+from static_map_generator.utils import merge_dicts, convert_geojson_to_geometry
 
 
 class Renderer():
@@ -84,6 +84,8 @@ class WktRenderer(Renderer):
         r.symbols.append(polygon_symbolizer)
         line_symbolizer = mapnik.LineSymbolizer(mapnik.Color('rgb(50%,50%,50%)'), 1.0)
         r.symbols.append(line_symbolizer)
+        point_symbolizer = mapnik.PointSymbolizer()
+        r.symbols.append(point_symbolizer)
         s.rules.append(r)
         m.append_style('My Style', s)
         csv_string = '''
@@ -128,7 +130,9 @@ class LogoRenderer(Renderer):
 
 class GeojsonRenderer(WktRenderer):
     def render(self, **kwargs):
-        kwargs['wkt'] = wkt.dumps(kwargs['geojson'])
+        geom = convert_geojson_to_geometry(kwargs['geojson'])
+        kwargs['wkt'] = geom.wkt
+        #kwargs['wkt'] = wkt.dumps(kwargs['geojson'])
         WktRenderer.render(self, **kwargs)
 
     def type(self):
