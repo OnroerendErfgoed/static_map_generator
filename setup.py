@@ -10,8 +10,7 @@ with open(os.path.join(here, 'README.rst')) as f:
 #     CHANGES = f.read()
 CHANGES = "changes"
 
-requires = ['geomet',
-      'mapnik2',
+requires = ['mapnik2',
       'Wand',
       'argparse',
       'requests',
