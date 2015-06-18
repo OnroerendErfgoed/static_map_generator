@@ -10,11 +10,12 @@ with open(os.path.join(here, 'README.rst')) as f:
 #     CHANGES = f.read()
 CHANGES = "changes"
 
-requires = ['mapnik2',
+requires = [
+      'tempdir',
+      'mapnik2',
       'Wand',
       'argparse',
       'requests',
-      'tempdir',
       'wsgiref']
 
 setup(name='static_map_generator',
