@@ -9,7 +9,7 @@ import mapnik
 from wand.color import Color
 from wand.image import Image
 from wand.image import Font
-from static_map_generator.utils import merge_dicts, convert_geojson_to_geometry
+from static_map_generator.utils import merge_dicts, convert_geojson_to_geometry, convert_geojson_to_wkt
 
 
 class Renderer():
@@ -87,15 +87,16 @@ class WktRenderer(Renderer):
         point_symbolizer = mapnik.PointSymbolizer()
         r.symbols.append(point_symbolizer)
         s.rules.append(r)
-        m.append_style('My Style', s)
-        csv_string = '''
-         wkt,Name
-        "%s","test"
-        ''' % kwargs['wkt']
-        ds = mapnik.Datasource(**{"type": "csv", "inline": csv_string})
-        layer = mapnik.Layer('world', '+init=epsg:' + str(kwargs['epsg']))
-        layer.datasource = ds
-        layer.styles.append('My Style')
+        m.append_style('Style', s)
+        # csv_string = '''
+        #  wkt,Name
+        # "%s","test"
+        # ''' % kwargs['wkt']
+        #ds = mapnik.Datasource(**{"type": "csv", "inline": csv_string})
+
+        layer = mapnik.Layer('wkt', '+init=epsg:' + str(kwargs['epsg']))
+        # layer.datasource = Geos(wkt=kwargs['wkt'])
+        layer.styles.append('Style')
         m.layers.append(layer)
         extent = Box2d(kwargs['bbox'][0], kwargs['bbox'][1], kwargs['bbox'][2], kwargs['bbox'][3])
         m.zoom_to_box(extent)
@@ -130,9 +131,7 @@ class LogoRenderer(Renderer):
 
 class GeojsonRenderer(WktRenderer):
     def render(self, **kwargs):
-        geom = convert_geojson_to_geometry(kwargs['geojson'])
-        kwargs['wkt'] = geom.wkt
-        #kwargs['wkt'] = wkt.dumps(kwargs['geojson'])
+        kwargs['wkt'] = convert_geojson_to_wkt(kwargs['geojson'])
         WktRenderer.render(self, **kwargs)
 
     def type(self):

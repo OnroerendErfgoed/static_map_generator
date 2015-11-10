@@ -1,3 +1,5 @@
+import json
+import geojson
 from shapely.geometry import shape
 from shapely.ops import unary_union
 from shapely.wkt import loads
@@ -73,3 +75,16 @@ def convert_geojson_to_geometry(value):
         return unary_union(shape(value))
     except Exception as e:
         raise ValueError("GeoJson is niet geldig: %s" % value, e)
+
+def convert_geojson_to_wkt(value):
+    s = json.dumps(value)
+    # Convert to geojson.geometry.Polygon
+    g1 = geojson.loads(s)
+
+    # Feed to shape() to convert to shapely.geometry.polygon.Polygon
+    # This will invoke its __geo_interface__ (https://gist.github.com/sgillies/2217756)
+    g2 = shape(g1)
+
+    # Now it's very easy to get a WKT/WKB representation
+    return g2.wkt
+
