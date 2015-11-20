@@ -1,10 +1,16 @@
 import os
 import unittest
 import tempdir
+from paste.deploy import appconfig
 from wand.image import Image
 from static_map_generator.renderer import Renderer, WmsRenderer, LogoRenderer, WktRenderer, TextRenderer, \
     GeojsonRenderer, ScaleRenderer, LegendRenderer, DefaultRenderer
 
+TEST_DIR = os.path.dirname(__file__)
+settings = appconfig(
+    'config:' + os.path.join(TEST_DIR, 'test.ini'),
+    name='static_map_generator'
+)
 
 class UtilsTests(unittest.TestCase):
 

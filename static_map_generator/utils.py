@@ -60,21 +60,21 @@ def convert_filetype(filename_ori, filename_res, filetype):
     with original.convert(filetype) as converted:
         converted.save(filename=filename_res)
 
-def convert_geojson_to_geometry(value):
-    """
-    Deze functie converteert geojson naar een geometry(shapely)
-
-    :param value: geojson
-    :return: geometry (shapely)
-    """
-    if value is None or not value:
-        return None
-
-    try:
-        #return asShape(value)
-        return unary_union(shape(value))
-    except Exception as e:
-        raise ValueError("GeoJson is niet geldig: %s" % value, e)
+# def convert_geojson_to_geometry(value):
+#     """
+#     Deze functie converteert geojson naar een geometry(shapely)
+#
+#     :param value: geojson
+#     :return: geometry (shapely)
+#     """
+#     if value is None or not value:
+#         return None
+#
+#     try:
+#         #return asShape(value)
+#         return unary_union(shape(value))
+#     except Exception as e:
+#         raise ValueError("GeoJson is niet geldig: %s" % value, e)
 
 def convert_geojson_to_wkt(value):
     s = json.dumps(value)

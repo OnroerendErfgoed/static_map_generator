@@ -10,8 +10,8 @@ with open(os.path.join(here, 'README.rst')) as f:
 CHANGES = "changes"
 
 requires = [
+      'pyramid',
       'tempdir',
-      'mapnik2',
       'Wand',
       'argparse',
       'requests',

@@ -17,6 +17,10 @@ class Generator():
 
         temp = tempdir.TempDir()
         images = []
+        if not 'filename' in config['params']:
+            config['params']['filename'] = os.path.join(temp.name, "result")
+
+
 
         #render layers
         for l in config['layers']:
@@ -40,4 +44,9 @@ class Generator():
 
         #convert filetype
         convert_filetype(temp_combined, config['params']['filename'], config['params']['filetype'])
-        return
+        return config
+
+    @staticmethod
+    def generateStream(config):
+        config = classmethod.generate(config)
+        return open(config['params']['filename'], 'rb').read()

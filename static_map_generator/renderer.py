@@ -1,15 +1,14 @@
 from abc import ABCMeta, abstractmethod
 #from geomet import wkt
-
+from mapnik._mapnik import Box2d
 from requests import ConnectionError
 import requests
 
-from _mapnik import Box2d
 import mapnik
 from wand.color import Color
 from wand.image import Image
 from wand.image import Font
-from static_map_generator.utils import merge_dicts, convert_geojson_to_geometry, convert_geojson_to_wkt
+from static_map_generator.utils import merge_dicts, convert_geojson_to_wkt
 
 
 class Renderer():
