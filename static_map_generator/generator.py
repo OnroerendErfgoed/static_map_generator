@@ -35,7 +35,7 @@ class Generator():
                 images.append(layer['filename'])
             except Exception as e:
                 warnings.warn(
-            'Following layer could not be rendered:' + layer['name'] + 'message: ' + e.message,
+            'Following layer could not be rendered: ' + layer['name'] + ' -->message: ' + e.message,
             UserWarning
         )
         #combine individual layers
@@ -48,5 +48,7 @@ class Generator():
 
     @staticmethod
     def generateStream(config):
-        config = classmethod.generate(config)
+        temp = tempdir.TempDir()
+        config['params']['filename'] = os.path.join(temp.name, "result")
+        config = Generator.generate(config)
         return open(config['params']['filename'], 'rb').read()

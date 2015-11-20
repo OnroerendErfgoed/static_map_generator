@@ -121,7 +121,7 @@ class UtilsTests(unittest.TestCase):
         self.assertIsInstance(renderer, GeojsonRenderer)
         self.assertEquals(renderer.type(), "geojson")
 
-    def test_wkt_renderer_render(self):
+    def test_multipoint_renderer_render(self):
         renderer = Renderer.factory("wkt")
         renderer.render(
             **{
@@ -133,8 +133,29 @@ class UtilsTests(unittest.TestCase):
             'filetype': 'png',
             'width': 500,
             'height': 500,
-            'color': 'steelblue',
+            'color': '#0000ff',
             'wkt': 'MULTIPOINT ((103500 192390.11), (103912.03 192390.11))',
+            'bbox': [100000, 100000, 200000, 200000]
+         }
+        )
+        self.assertTrue(os.path.isfile(self.file_path))
+        image = Image(filename=self.file_path)
+        self.assertIsInstance(image, Image)
+
+    def test_multipoint2_renderer_render(self):
+        renderer = Renderer.factory("wkt")
+        renderer.render(
+            **{
+            'type': 'wkt',
+            'name': 'wkt.png',
+            'opacity': 0.5,
+            'filename': self.file_path,
+            'epsg': 31370,
+            'filetype': 'png',
+            'width': 500,
+            'height': 500,
+            'color': '#0000ff',
+            'wkt': 'MULTIPOINT (103500 192390.11, 103912.03 192390.11)',
             'bbox': [100000, 100000, 200000, 200000]
          }
         )

@@ -75,7 +75,7 @@ class RestFunctionalTests(FunctionalTests):
         {
             "layer": {
                 "type": "wkt",
-                "name": "WKT",
+                "name": "wkt.png",
                 "wkt": "POLYGON ((155000 215000, 160000 210000, 160000 215000, 155000 215000))",
                 "color": "steelblue",
                 "opacity": 0.5

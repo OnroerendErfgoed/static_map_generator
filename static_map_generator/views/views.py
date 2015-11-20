@@ -30,7 +30,6 @@ class RestView(object):
     @view_config(route_name='maps', request_method='POST', accept='application/json')
     def maps_by_post(self):
         config = self._get_params()
-        Generator.generate(config)
         res = Response(content_type='image/png')
         res.status = '200 OK'
         res.body = Generator.generateStream(config)

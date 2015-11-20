@@ -12,17 +12,32 @@ Based on a configuration file, the SMG renders all individual layers to temporar
 Use
 =======
 
+As a Library
+------------
 * Import Generator from static_map_generator.generator
 * Create a configuration file
 * Generator.generate('config')
+
+As a Service
+------------
+* POST the config-file (json) to the REST endpoint: http://localhost:6543/maps
+* The service returns the generated image
 
 Example
 =======
 
 Let's clarify this with an example:
 
+Library
+-------
+
 .. literalinclude:: /../../examples/map_simple.py
     :language: python
+
+
+Service
+-------
+
 
 
 Configuration
@@ -124,6 +139,12 @@ Not implemented yet
 
 Development
 ===========
+First of all, Mapnik (2.3) and all dependencies has to be installed on your machine. Please use the following instructions:
+https://github.com/mapnik/mapnik/wiki/UbuntuInstallation
+
+.. code-block:: bash
+    $ pip install -r requirements-dev.txt
+    $ pserve development.ini
 
 We try to cover as much code as we can with unit tests. You can run them using
 tox_ or directly through pytest. When providing a pull request, please run the

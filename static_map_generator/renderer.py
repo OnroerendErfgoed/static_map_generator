@@ -78,7 +78,7 @@ class WktRenderer(Renderer):
         m = mapnik.Map(kwargs['width'], kwargs['height'], '+init=epsg:' + str(kwargs['epsg']))
         s = mapnik.Style()
         r = mapnik.Rule()
-        polygon_symbolizer = mapnik.PolygonSymbolizer(mapnik.Color(kwargs['color']))
+        polygon_symbolizer = mapnik.PolygonSymbolizer(mapnik.Color(str(kwargs['color'])))
         polygon_symbolizer.fill_opacity = kwargs['opacity']
         r.symbols.append(polygon_symbolizer)
         line_symbolizer = mapnik.LineSymbolizer(mapnik.Color('rgb(50%,50%,50%)'), 1.0)
@@ -86,20 +86,19 @@ class WktRenderer(Renderer):
         point_symbolizer = mapnik.PointSymbolizer()
         r.symbols.append(point_symbolizer)
         s.rules.append(r)
-        m.append_style('Style', s)
-        # csv_string = '''
-        #  wkt,Name
-        # "%s","test"
-        # ''' % kwargs['wkt']
-        #ds = mapnik.Datasource(**{"type": "csv", "inline": csv_string})
-
+        m.append_style('My Style', s)
+        csv_string = '''
+         wkt,Name
+        "%s","test"
+        ''' % kwargs['wkt']
+        ds = mapnik.Datasource(**{"type": "csv", "inline": csv_string})
         layer = mapnik.Layer('wkt', '+init=epsg:' + str(kwargs['epsg']))
-        # layer.datasource = Geos(wkt=kwargs['wkt'])
-        layer.styles.append('Style')
+        layer.datasource = ds
+        layer.styles.append('My Style')
         m.layers.append(layer)
         extent = Box2d(kwargs['bbox'][0], kwargs['bbox'][1], kwargs['bbox'][2], kwargs['bbox'][3])
         m.zoom_to_box(extent)
-        mapnik.render_to_file(m, kwargs['filename'], kwargs['filetype'])
+        mapnik.render_to_file(m, str(kwargs['filename']), str(kwargs['filetype']))
 
     def type(self):
         return "wkt"
@@ -121,7 +120,7 @@ class LogoRenderer(Renderer):
     def render(self, **kwargs):
         with Image(filename=kwargs['path']) as img:
             img.resize(width=kwargs['width'], height=kwargs['height'])
-            img.transparentize(0.9)
+            img.transparentize(1 - kwargs['opacity'])
             img.save(filename=kwargs['filename'])
 
     def type(self):
