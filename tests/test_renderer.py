@@ -102,7 +102,7 @@ class UtilsTests(unittest.TestCase):
             **{
             'type': 'logo',
             'name': 'logo.png',
-            'path': os.path.join(self.here, 'logo.png'),
+            'path': os.path.join(self.here, 'fixtures/logo.png'),
             'opacity': 0.5,
             'filename': self.file_path,
             'epsg': 31370,

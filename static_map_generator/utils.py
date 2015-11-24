@@ -1,10 +1,11 @@
 import json
-import geojson
 from shapely.geometry import shape
 from shapely.ops import unary_union
 from shapely.wkt import loads
 from wand.exceptions import WandException
 from wand.image import Image
+import geojson
+import shapely.wkt
 
 def combine_layers(images, filename):
     combo = None
@@ -60,31 +61,15 @@ def convert_filetype(filename_ori, filename_res, filetype):
     with original.convert(filetype) as converted:
         converted.save(filename=filename_res)
 
-# def convert_geojson_to_geometry(value):
-#     """
-#     Deze functie converteert geojson naar een geometry(shapely)
-#
-#     :param value: geojson
-#     :return: geometry (shapely)
-#     """
-#     if value is None or not value:
-#         return None
-#
-#     try:
-#         #return asShape(value)
-#         return unary_union(shape(value))
-#     except Exception as e:
-#         raise ValueError("GeoJson is niet geldig: %s" % value, e)
-
 def convert_geojson_to_wkt(value):
     s = json.dumps(value)
-    # Convert to geojson.geometry.Polygon
     g1 = geojson.loads(s)
-
-    # Feed to shape() to convert to shapely.geometry.polygon.Polygon
-    # This will invoke its __geo_interface__ (https://gist.github.com/sgillies/2217756)
     g2 = shape(g1)
-
-    # Now it's very easy to get a WKT/WKB representation
     return g2.wkt
+
+
+def convert_wkt_to_geojson(value):
+    g1 = shapely.wkt.loads(value)
+    g2 = geojson.Feature(geometry=g1, properties={})
+    return g2.geometry
 

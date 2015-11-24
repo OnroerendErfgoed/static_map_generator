@@ -18,7 +18,7 @@ class MapMakerTests(unittest.TestCase):
         height = 500
         simple_config = {
             'params': {
-                'filename': file_path,
+                 'filename': file_path,
                 'epsg': 31370,
                 'filetype': 'png',
                 'width': width,
@@ -43,6 +43,33 @@ class MapMakerTests(unittest.TestCase):
         image = Image(filename=file_path)
         self.assertEqual(image.width, width)
         self.assertEqual(image.height, height)
+
+    def test_static_map_generator2(self):
+        width = 500
+        height = 500
+        simple_config = {
+            'params': {
+                'epsg': 31370,
+                'filetype': 'png',
+                'width': width,
+                'height': height,
+                'bbox': [145000, 195000, 165000, 215000]
+            },
+            'layers':
+                [{'layer': {
+                    'type': 'text',
+                    'name': 'text.png',
+                    'text': 'This is a test',
+                    'color': '#FF3366',
+                    'borderwidth': 0,
+                    'font_size': 24,
+                    'text_color': '#FF3366'
+                }
+                  }
+                 ]
+        }
+        Generator.generate(simple_config)
+
 
     def test_invalid_layer(self):
         file_path = os.path.join(self.tempdir.name, 'test.png')

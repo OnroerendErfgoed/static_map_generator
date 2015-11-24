@@ -20,8 +20,6 @@ class Generator():
         if not 'filename' in config['params']:
             config['params']['filename'] = os.path.join(temp.name, "result")
 
-
-
         #render layers
         for l in config['layers']:
             layer = l['layer']

@@ -8,7 +8,7 @@ import mapnik
 from wand.color import Color
 from wand.image import Image
 from wand.image import Font
-from static_map_generator.utils import merge_dicts, convert_geojson_to_wkt
+from static_map_generator.utils import merge_dicts, convert_wkt_to_geojson
 
 
 class Renderer():
@@ -44,7 +44,6 @@ class Renderer():
 
 class WmsRenderer(Renderer):
     def render(self, **kwargs):
-        # filename, url, layers, filetype, epsg, width, height, bbox
         params = {
             "layers": kwargs['layers'],
             "transparent": "TRUE",
@@ -73,7 +72,8 @@ class WmsRenderer(Renderer):
     def type(self):
         return "wms"
 
-class WktRenderer(Renderer):
+
+class GeojsonRenderer(Renderer):
     def render(self, **kwargs):
         m = mapnik.Map(kwargs['width'], kwargs['height'], '+init=epsg:' + str(kwargs['epsg']))
         s = mapnik.Style()
@@ -87,11 +87,8 @@ class WktRenderer(Renderer):
         r.symbols.append(point_symbolizer)
         s.rules.append(r)
         m.append_style('My Style', s)
-        csv_string = '''
-         wkt,Name
-        "%s","test"
-        ''' % kwargs['wkt']
-        ds = mapnik.Datasource(**{"type": "csv", "inline": csv_string})
+        ds = mapnik.Ogr(string='%s' % kwargs['geojson'], layer='OGRGeoJSON')
+        # ds = mapnik.Datasource(**{"type": "geojson", "inline": geojson})
         layer = mapnik.Layer('wkt', '+init=epsg:' + str(kwargs['epsg']))
         layer.datasource = ds
         layer.styles.append('My Style')
@@ -99,6 +96,15 @@ class WktRenderer(Renderer):
         extent = Box2d(kwargs['bbox'][0], kwargs['bbox'][1], kwargs['bbox'][2], kwargs['bbox'][3])
         m.zoom_to_box(extent)
         mapnik.render_to_file(m, str(kwargs['filename']), str(kwargs['filetype']))
+
+    def type(self):
+        return "geojson"
+
+
+class WktRenderer(Renderer):
+    def render(self, **kwargs):
+        kwargs['geojson'] = convert_wkt_to_geojson(kwargs['wkt'])
+        GeojsonRenderer().render(**kwargs)
 
     def type(self):
         return "wkt"
@@ -116,6 +122,7 @@ class TextRenderer(Renderer):
     def type(self):
         return "text"
 
+
 class LogoRenderer(Renderer):
     def render(self, **kwargs):
         with Image(filename=kwargs['path']) as img:
@@ -125,15 +132,6 @@ class LogoRenderer(Renderer):
 
     def type(self):
         return "logo"
-
-
-class GeojsonRenderer(WktRenderer):
-    def render(self, **kwargs):
-        kwargs['wkt'] = convert_geojson_to_wkt(kwargs['geojson'])
-        WktRenderer.render(self, **kwargs)
-
-    def type(self):
-        return "geojson"
 
 
 class ScaleRenderer(Renderer):
