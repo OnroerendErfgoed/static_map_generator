@@ -1,6 +1,9 @@
 from abc import ABCMeta, abstractmethod
 #from geomet import wkt
+from io import StringIO
+
 from mapnik._mapnik import Box2d
+from pyramid.httpexceptions import HTTPNotFound
 from requests import ConnectionError
 import requests
 
@@ -61,11 +64,11 @@ class WmsRenderer(Renderer):
         try:
             res = requests.get(kwargs['url'], params=params)
         except ConnectionError as e:
-            raise Exception("Request could not be executed - Request: %s - Params: %s" % (kwargs['url'], params))
+            raise ConnectionError("Request could not be executed - Request: %s - Params: %s" % (kwargs['url'], params))
         if res.status_code == 404:
-            raise Exception("Service not found (status_code 404) - Request: %s - Params: %s" % (kwargs['url'], params))
+            raise HTTPNotFound("Service not found (status_code 404) - Request: %s - Params: %s" % (kwargs['url'], params))
         if res.content[2:5]=='xml':
-            raise Exception("Exception occured - Request: %s - Params: %s -  Reason: %s" % (kwargs['url'], params, res.content))
+            raise ValueError("Exception occured - Request: %s - Params: %s -  Reason: %s" % (kwargs['url'], params, res.content))
         with open(kwargs['filename'], 'wb') as im:
                 im.write(res.content)
 
@@ -125,7 +128,10 @@ class TextRenderer(Renderer):
 
 class LogoRenderer(Renderer):
     def render(self, **kwargs):
-        with Image(filename=kwargs['path']) as img:
+
+        response = requests.get(kwargs['url'], stream=True)
+        # img = Image.open(StringIO(response.content))
+        with Image(blob=response.content) as img:
             img.resize(width=kwargs['width'], height=kwargs['height'])
             img.transparentize(1 - kwargs['opacity'])
             img.save(filename=kwargs['filename'])

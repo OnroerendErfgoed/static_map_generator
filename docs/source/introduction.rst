@@ -77,12 +77,23 @@ WMS
 Key             Description                                         Type        Mandatory   Example
 ============    ================================================    ==========  ==========  ===============
 'type'          Type of layer                                       String      True        'wms'
-'name'          Name for temporary image                            String      True        'WMS'
 'url'           url of the wms-service                              String      True        'https://geo.onroerenderfgoed.be/geoserver/wms?'
 'layers'        layernames to be used in wms-service                String      True        'vioe_geoportaal:landschapsbeheersplannen'
 ============    ================================================    ==========  ==========  ===============
 
 Notice: Next to these parameters, other supported parameters of the wms-service can be given, f.e featureid, bgcolor, transparant, ...
+
+
+GeoJSON
+^^^^^^^
+============    ================================================    ==========  ==========  ===============
+Key             Description                                         Type        Mandatory   Example
+============    ================================================    ==========  ==========  ===============
+'type'          Type of layer                                       String      True        'geojson'
+'geojson'       geojson-notation of geometry                        String      True        {'crs': {'type': 'name', 'properties': {'name': 'EPSG:31370'}}, 'type': 'MultiPoint', 'coordinates': [[103912.03, 192390.11],[103500, 192390.11]]}
+'color'         colorcode (RGB, HEX, named color)                   String      True        'steelblue'
+'opacity'       opacity                                             Numeric     True        0.6
+============    ================================================    ==========  ==========  ===============
 
 WKT
 ^^^^^^^
@@ -91,7 +102,6 @@ WKT
 Key             Description                                         Type        Mandatory   Example
 ============    ================================================    ==========  ==========  ===============
 'type'          Type of layer                                       String      True        'wkt'
-'name'          Name for temporary image                            String      True        'WKT'
 'wkt'           WKT-notation of geometry                            String      True        'POLYGON ((4.5 50.2, 5 50.2, 5 50, 4.5 50.2))'
 'color'         colorcode (RGB, HEX, named color)                   String      True        'steelblue'
 'opacity'       opacity                                             Numeric     True        0.6
@@ -105,8 +115,8 @@ Logo
 Key             Description                                         Type        Mandatory   Example
 ============    ================================================    ==========  ==========  ===============
 'type'          Type of layer                                       String      True        'logo'
-'name'          Name for temporary image                            String      True        'LOGO'
-'path'          patch of the logo to be used                        String      True        'logo.png'
+'path'          path of the logo to be used                         String      True        'logo.png'
+'url'           url of the logo to be used                          String      True        'https://www.onroerenderfgoed.be/assets/img/logo-og.png'
 'opacity'       opacity                                             Numeric     True        0.6
 ============    ================================================    ==========  ==========  ===============
 
@@ -117,22 +127,19 @@ Text
 Key             Description                                         Type        Mandatory   Example
 ============    ================================================    ==========  ==========  ===============
 'type'          Type of layer                                       String      True        'text'
-'name'          Name for temporary image                            String      True        'TEXT'
 'text'          Text to be used for the layer                       String      True        'This is a test'
 'font_size'     Font size                                           Integer     True        24
 'text_color'    colorcode (RGB, HEX, named color)                   String      True        'steelblue'
 ============    ================================================    ==========  ==========  ===============
 
-GeoJSON
-^^^^^^^
-Not implemented yet
-
 Scale
 ^^^^^^^
+
 Not implemented yet
 
 Legend
 ^^^^^^^
+
 Not implemented yet
 
 

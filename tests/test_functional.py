@@ -29,18 +29,53 @@ class RestFunctionalTests(FunctionalTests):
 
     def _get_params_non_existent(self):
           return {
-            "layer": {
+    "params": {
+        "epsg": 31370,
+        "filetype": "png",
+        "width": 500,
+        "height": 500,
+        "bbox": [
+            145000,
+            195000,
+            165000,
+            215000
+        ]
+    },
+    "layers": [{
                 "type": "wms",
-                "name": "ONBESTAAND",
                 "url": "https://geo.onroerenderfgoed.be/geoserver/wms?",
-                "layers": "vioe_geoportaal:onbestaande_laag"
-            }
+              "layers": "vioe_geoportaal:onbestaande_laag"
+
+        }]
+          }
+
+    def _get_params1(self):
+          return {
+    "params": {
+        "epsg": 31370,
+        "filetype": "png",
+        "width": 500,
+        "height": 500,
+        "bbox": [
+            145000,
+            195000,
+            165000,
+            215000
+        ]
+    },
+    "layers": [ {
+                "type": "text",
+                "text": "This is a test",
+                "color": "#FF3366",
+                "borderwidth": 1,
+                "font_size": 24,
+                "text_color": "#FF3366"
+            }]
         }
 
     def _get_params(self):
         return {
     "params": {
-        # "filename": "file_path",
         "epsg": 31370,
         "filetype": "png",
         "width": 500,
@@ -54,55 +89,49 @@ class RestFunctionalTests(FunctionalTests):
     },
     "layers": [
         {
-            "layer": {
+
                 "type": "text",
-                "name": "text.png",
                 "text": "This is a test",
                 "color": "#FF3366",
                 "borderwidth": 1,
                 "font_size": 24,
                 "text_color": "#FF3366"
-            }
+
         },
         {
-            "layer": {
+
                 "type": "logo",
-                "name": "logo.png",
-                "path": "logo.png",
+                "url": "https://www.onroerenderfgoed.be/assets/img/logo-og.png",
                 "opacity": 0.5
-            }
+
         },
         {
-            "layer": {
+
                 "type": "wkt",
-                "name": "wkt.png",
                 "wkt": "POLYGON ((155000 215000, 160000 210000, 160000 215000, 155000 215000))",
                 "color": "steelblue",
                 "opacity": 0.5
-            }
+
         },
         {
-            "layer": {
+
                 "type": "wms",
-                "name": "OE",
                 "url": "https://geo.onroerenderfgoed.be/geoserver/wms?",
-                "layers": "vioe_geoportaal:landschapsbeheersplannen",
-                "featureid": "landschapsbeheersplannen.3816"
-            }
+                "layers": "vioe_geoportaal:landschapsbeheersplannen"
+
         },
         {
-            "layer": {
+
                 "type": "wms",
-                "name": "GRB",
                 "url": "http://geo.api.agiv.be/geodiensten/raadpleegdiensten/GRB-basiskaart/wmsgr?",
                 "layers": "GRB_BSK"
             }
-        }
+
     ]
 }
 
     def test_map(self):
-        res = self.testapp.post('/maps', json.dumps(self._get_params()),
+        res = self.testapp.post('/maps', json.dumps(self._get_params1()),
                                 headers={'Accept': 'application/json'})
         self.assertIn('image/png', res.headers['Content-Type'])
         self.assertEqual('200 OK', res.status)
@@ -121,3 +150,7 @@ class RestFunctionalTests(FunctionalTests):
         except Exception as e:
             self.assertIsInstance(e, AppError)
         pass
+
+    def test_renderror(self):
+        data = json.dumps(self._get_params_non_existent())
+        self.assertRaises(Exception,self.testapp.post,'/maps',data ,headers={'Accept': 'application/json'})

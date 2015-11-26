@@ -34,7 +34,6 @@ class UtilsTests(unittest.TestCase):
             renderer.render(
                 **{
                 'type': 'wms',
-                'name': 'test',
                 'url': 'http://non_existant/geoserver/wms?',
                 'layers': 'vioe_geoportaal:onbestaande_laag',
                 'filename': 'filename',
@@ -51,7 +50,6 @@ class UtilsTests(unittest.TestCase):
             renderer.render(
                 **{
                 'type': 'wms',
-                'name': 'test',
                 'url': 'https://geo.onroerenderfgoed.be/geoserver/wee_em_es?',
                 'layers': 'vioe_geoportaal:onbestaande_laag',
                 'filename': 'filename',
@@ -68,7 +66,6 @@ class UtilsTests(unittest.TestCase):
             renderer.render(
                 **{
                 'type': 'wms',
-                'name': 'test',
                 'url': 'https://geo.onroerenderfgoed.be/geoserver/wms?',
                 'layers': 'vioe_geoportaal:onbestaande_laag',
                 'filename': 'filename',
@@ -101,8 +98,8 @@ class UtilsTests(unittest.TestCase):
         renderer.render(
             **{
             'type': 'logo',
-            'name': 'logo.png',
-            'path': os.path.join(self.here, 'fixtures/logo.png'),
+            # 'path': os.path.join(self.here, 'fixtures/logo.png'),
+            'url': 'https://www.onroerenderfgoed.be/assets/img/logo-og.png',
             'opacity': 0.5,
             'filename': self.file_path,
             'epsg': 31370,
@@ -126,7 +123,6 @@ class UtilsTests(unittest.TestCase):
         renderer.render(
             **{
             'type': 'wkt',
-            'name': 'wkt.png',
             'opacity': 0.5,
             'filename': self.file_path,
             'epsg': 31370,
@@ -147,7 +143,6 @@ class UtilsTests(unittest.TestCase):
         renderer.render(
             **{
             'type': 'wkt',
-            'name': 'wkt.png',
             'opacity': 0.5,
             'filename': self.file_path,
             'epsg': 31370,
@@ -168,7 +163,6 @@ class UtilsTests(unittest.TestCase):
         renderer.render(
             **{
             'type': 'geojson',
-            'name': 'geojson.png',
             'opacity': 0.5,
             'filename': self.file_path,
             'epsg': 31370,
@@ -195,7 +189,6 @@ class UtilsTests(unittest.TestCase):
         renderer.render(
             **{
             'type': 'geojson',
-            'name': 'geojson.png',
             'opacity': 0.5,
             'filename': self.file_path,
             'epsg': 31370,
