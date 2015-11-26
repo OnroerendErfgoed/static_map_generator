@@ -206,9 +206,21 @@ class UtilsTests(unittest.TestCase):
 
     def test_scale_renderer(self):
         renderer = Renderer.factory("scale")
+        renderer.render(
+            **{
+            'type': 'scale',
+            'filename': self.file_path,
+            'epsg': 31370,
+            'filetype': 'png',
+            'width': 500,
+            'height': 500,
+            'bbox': [100000, 100000, 200000, 200000]
+         })
         self.assertIsInstance(renderer, ScaleRenderer)
         self.assertEquals(renderer.type(), "scale")
-        self.assertRaises(NotImplementedError, renderer.render)
+        self.assertTrue(os.path.isfile(self.file_path))
+        image = Image(filename=self.file_path)
+        self.assertIsInstance(image, Image)
 
     def test_legend_renderer(self):
         renderer = Renderer.factory("legend")
