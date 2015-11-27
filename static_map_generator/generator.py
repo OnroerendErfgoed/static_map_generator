@@ -52,4 +52,5 @@ class Generator():
         temp = tempdir.TempDir()
         config['params']['filename'] = os.path.join(temp.name, "result")
         config = Generator.generate(config)
-        return open(config['params']['filename'], 'rb').read()
+        with open(config['params']['filename'],'rb') as f:
+            return f.read()

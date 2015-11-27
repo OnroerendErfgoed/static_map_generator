@@ -1,3 +1,4 @@
+import os
 from abc import ABCMeta, abstractmethod
 import json
 
@@ -139,7 +140,15 @@ class LogoRenderer(Renderer):
 
 class ScaleRenderer(Renderer):
     def render(self, **kwargs):
-        raise NotImplementedError("This method is not yet implemented")
+        #todo: this is just some test implementation!
+        here = os.path.abspath(os.path.dirname(__file__))
+        path = os.path.join(here, 'scale.png')
+        with Image(filename=path) as img:
+            width = kwargs['width']
+            scalewidth = width/10
+            scaleheight = img.height*scalewidth/img.width
+            img.resize(width=scalewidth, height =scaleheight)
+            img.save(filename=kwargs['filename'])
 
     def type(self):
         return "scale"
