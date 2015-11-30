@@ -1,8 +1,11 @@
 import os
 import unittest
 import tempdir
+from wand.color import Color
+from wand.display import display
 from wand.image import Image
-from static_map_generator.utils import convert_filetype, combine_layers, convert_geojson_to_wkt, convert_wkt_to_geojson
+from static_map_generator.utils import convert_filetype, combine_layers, convert_geojson_to_wkt, convert_wkt_to_geojson, \
+    position_figure
 
 
 class UtilsTests(unittest.TestCase):
@@ -41,6 +44,15 @@ class UtilsTests(unittest.TestCase):
         self.assertIsInstance(g2, dict)
         wkt2 = convert_geojson_to_wkt(g1)
         self.assertEqual(wkt1, wkt2)
+
+    def test_position_figure(self):
+        file_path = os.path.join(self.tempdir.name, 'position.png')
+        with Image(width=200, height=100, background=Color('red')) as img:
+            position_figure(500, 500, img, 'center', file_path)
+            position_figure(500, 500, img, 'north_west', file_path)
+            position_figure(500, 500, img, 'north_east', file_path)
+            position_figure(500, 500, img, 'south_west', file_path)
+            position_figure(500, 500, img, 'south_east', file_path)
 
 
 

@@ -127,10 +127,17 @@ class MapMakerTests(unittest.TestCase):
             'text_color': '#FF3366'
 
           },
+            {
+            'type': 'legend'
+          },
+
          {
              'type': 'logo',
              'url': 'https://www.onroerenderfgoed.be/assets/img/logo-og.png',
-             'opacity': 0.5
+             'opacity': 0.5,
+             'imagewidth': 100,
+             'imageheight': 100,
+             'gravity': 'south_west'
 
           },
          {

@@ -1,4 +1,5 @@
 import os
+import warnings
 from abc import ABCMeta, abstractmethod
 import json
 
@@ -8,9 +9,10 @@ import requests
 
 import mapnik
 from wand.color import Color
+from wand.display import display
 from wand.image import Image
 from wand.image import Font
-from static_map_generator.utils import merge_dicts, convert_wkt_to_geojson
+from static_map_generator.utils import merge_dicts, convert_wkt_to_geojson, position_figure
 
 
 class Renderer():
@@ -113,11 +115,18 @@ class WktRenderer(Renderer):
 
 class TextRenderer(Renderer):
     def render(self, **kwargs):
+        defaults = {
+            "gravity": "center",
+            "font_size": 10,
+            "text_color": "#000000"
+        }
+        kwargs = merge_dicts(defaults, kwargs)
+
         with Image(width=kwargs['width'],
                    height=kwargs['height']) as image:
             font = Font(path='/Library/Fonts/Verdana.ttf', size=kwargs['font_size'], color=Color(kwargs['text_color']))
-            image.caption(kwargs['text'], left=0, top=0, width=kwargs['width'] - 10, height=kwargs['height'] - 5,
-                          font=font, gravity='center')
+            image.caption(kwargs['text'], left=0, top=0,
+                          font=font, gravity=kwargs['gravity'])
             image.save(filename=kwargs['filename'])
 
     def type(self):
@@ -125,29 +134,41 @@ class TextRenderer(Renderer):
 
 
 class LogoRenderer(Renderer):
+            #todo: this is just some test implementation!
     def render(self, **kwargs):
+        warnings.warn("still in development, do not use the ScaleRenderer in production", UserWarning)
 
         response = requests.get(kwargs['url'], stream=True)
         with Image(blob=response.content) as img:
-            img.resize(width=kwargs['width'], height=kwargs['height'])
+            img.resize(width=kwargs['imagewidth'], height=kwargs['imageheight'])
             img.transparentize(1 - kwargs['opacity'])
-            img.save(filename=kwargs['filename'])
+            position_figure(kwargs['width'], kwargs['height'], img, kwargs['gravity'], kwargs['filename'])
 
     def type(self):
         return "logo"
 
 
 class ScaleRenderer(Renderer):
-    def render(self, **kwargs):
         #todo: this is just some test implementation!
+    def render(self, **kwargs):
+        warnings.warn("still in development, do not use the ScaleRenderer in production", UserWarning)
+        # first the fraction between image size and real world has to be calculated so that we know how we must resize the scalebar.png.
+        # Afterwards the scalebar has to be positioned on a new image with the right width/heigth
+
+        #calculate fraction for scalebar
+        #todo: calculation
+
+        #create the scalebar
         here = os.path.abspath(os.path.dirname(__file__))
-        path = os.path.join(here, 'scale.png')
-        with Image(filename=path) as img:
-            width = kwargs['width']
-            scalewidth = width/10
-            scaleheight = img.height*scalewidth/img.width
-            img.resize(width=scalewidth, height =scaleheight)
-            img.save(filename=kwargs['filename'])
+        path = os.path.join(here, 'fixtures/scalebar.png')
+        with Image(filename=path) as scale_img:
+            scalewidth = kwargs['width']/10
+            scaleheight = scale_img.height*scalewidth/scale_img.width
+            scale_img.resize(width=scalewidth, height =scaleheight)
+            scale_img.transparentize(1 - kwargs['opacity'])
+            #position the scalebar
+            position_figure(kwargs['width'], kwargs['height'], scale_img, kwargs['gravity'], kwargs['filename'])
+
 
     def type(self):
         return "scale"
@@ -159,6 +180,7 @@ class LegendRenderer(Renderer):
 
     def type(self):
         return "legend"
+
 
 class DefaultRenderer(Renderer):
     def render(self, **kwargs):
