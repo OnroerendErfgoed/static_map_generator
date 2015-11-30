@@ -35,6 +35,9 @@ class Generator():
             try:
                 renderer.render(**kwarguments)
                 images.append(layer['filename'])
+            except NotImplementedError as e:
+                log.warning("Layertype is not yet implemented: " + e.message)
+                pass
 
             except Exception as e:
                 log.error('Following layer could not be rendered: ' + str(idx) + ' -->message: ' + e.message)

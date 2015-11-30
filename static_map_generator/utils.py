@@ -42,17 +42,27 @@ def combine_layers(images, filename):
 #     geom = loads(wkt)
 #     return geom.buffer(buffer)
 
-# def crop_image(img):
-#     print(img.size)
-#     with img[10:50, 20:100] as cropped:
-#         print(cropped.size)
-#     print(img.size)
-#
-# def grow_image(image, filename, width, height):
-#     with Image(width=width, height=height) as img:
-#         image.composite(img, left=0, top=0)
-#         image.save(filename=filename)
-#         # img.close()
+def position_figure(width, height, figure, gravity, filename):
+
+    if gravity == 'north_west':
+        left = 0
+        top = 0
+    elif gravity == 'north_east':
+        left = width - figure.width
+        top = 0
+    elif gravity == 'south_west':
+        left = 0
+        top = height - figure.height
+    elif gravity == 'south_east':
+        left = width - figure.width
+        top = height - figure.height
+    elif gravity == 'center':
+        left = width/2 - figure.width/2
+        top = height/2 - figure.height/2
+
+    with Image(width=width, height=height) as img:
+        img.composite(figure, left=left, top=top)
+        img.save(filename=filename)
 
 
 def merge_dicts(*dict_args):

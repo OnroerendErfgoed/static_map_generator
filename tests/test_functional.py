@@ -89,14 +89,12 @@ class RestFunctionalTests(FunctionalTests):
     },
     "layers": [
         {
-
                 "type": "text",
-                "text": "This is a test",
+                "text": "Copyright OE",
                 "color": "#FF3366",
-                "borderwidth": 1,
-                "font_size": 24,
-                "text_color": "#FF3366"
-
+                "font_size": 12,
+                "text_color": "#222222",
+                "gravity": "south_east"
         },
         {
 

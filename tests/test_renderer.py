@@ -17,7 +17,7 @@ class UtilsTests(unittest.TestCase):
     def setUp(self):
         self.tempdir = tempdir.TempDir()
         self.here = os.path.abspath(os.path.dirname(__file__))
-        self.file_path = os.path.join(self.tempdir.name, 'filepath')
+        self.file_path = os.path.join(self.tempdir.name, 'file.png')
 
     def tearDown(self):
         pass
@@ -101,6 +101,9 @@ class UtilsTests(unittest.TestCase):
             # 'path': os.path.join(self.here, 'fixtures/logo.png'),
             'url': 'https://www.onroerenderfgoed.be/assets/img/logo-og.png',
             'opacity': 0.5,
+             'imagewidth': 100,
+             'imageheight': 100,
+             'gravity': 'south_west',
             'filename': self.file_path,
             'epsg': 31370,
             'filetype': 'png',
@@ -209,6 +212,8 @@ class UtilsTests(unittest.TestCase):
         renderer.render(
             **{
             'type': 'scale',
+             'gravity': 'south_west',
+             'opacity': 1,
             'filename': self.file_path,
             'epsg': 31370,
             'filetype': 'png',
@@ -227,6 +232,7 @@ class UtilsTests(unittest.TestCase):
         self.assertIsInstance(renderer, LegendRenderer)
         self.assertEquals(renderer.type(), "legend")
         self.assertRaises(NotImplementedError, renderer.render)
+
 
     def test_default_renderer(self):
         renderer = Renderer.factory("")
