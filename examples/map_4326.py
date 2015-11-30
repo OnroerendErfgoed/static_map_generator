@@ -20,7 +20,9 @@ config_4326 = {
          {
              'type': 'logo',
              'url': 'https://www.onroerenderfgoed.be/assets/img/logo-og.png',
-             'opacity': 0.5
+             'opacity': 0.5,
+             'imagewidth': 100,
+            'imageheight': 100
 
           },
          {

@@ -98,7 +98,6 @@ class UtilsTests(unittest.TestCase):
         renderer.render(
             **{
             'type': 'logo',
-            # 'path': os.path.join(self.here, 'fixtures/logo.png'),
             'url': 'https://www.onroerenderfgoed.be/assets/img/logo-og.png',
             'opacity': 0.5,
              'imagewidth': 100,

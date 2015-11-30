@@ -134,9 +134,13 @@ class TextRenderer(Renderer):
 
 
 class LogoRenderer(Renderer):
-            #todo: this is just some test implementation!
     def render(self, **kwargs):
-        warnings.warn("still in development, do not use the ScaleRenderer in production", UserWarning)
+
+        defaults = {
+            "gravity": "center",
+            "opacity": 1
+        }
+        kwargs = merge_dicts(defaults, kwargs)
 
         response = requests.get(kwargs['url'], stream=True)
         with Image(blob=response.content) as img:
@@ -152,6 +156,13 @@ class ScaleRenderer(Renderer):
         #todo: this is just some test implementation!
     def render(self, **kwargs):
         warnings.warn("still in development, do not use the ScaleRenderer in production", UserWarning)
+
+        defaults = {
+            "gravity": "center",
+            "opacity": 1
+        }
+        kwargs = merge_dicts(defaults, kwargs)
+
         # first the fraction between image size and real world has to be calculated so that we know how we must resize the scalebar.png.
         # Afterwards the scalebar has to be positioned on a new image with the right width/heigth
 

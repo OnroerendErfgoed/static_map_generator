@@ -30,6 +30,20 @@ config = {
                 "opacity": 0.5
 
             },
+                        {
+                "type": "wkt",
+            'wkt': 'MULTIPOINT ((103500 192390.11), (103912.03 192390.11))',
+                "color": "steelblue",
+                "opacity": 0.5
+
+            },
+                        {
+                "type": "wkt",
+            'wkt': 'MULTIPOINT (103500 192390.11, 103912.03 192390.11)',
+                "color": "steelblue",
+                "opacity": 0.5
+
+            },
             {
                 "type": "wms",
                 "url": "https://geo.onroerenderfgoed.be/geoserver/wms?",

@@ -146,8 +146,23 @@ Not implemented yet
 
 Development
 ===========
-First of all, Mapnik (2.3) and all dependencies has to be installed on your machine. Please use the following instructions:
-https://github.com/mapnik/mapnik/wiki/UbuntuInstallation
+First of all, Mapnik (2.3) and all dependencies has to be installed on your machine and available from a virtual environment.
+
+* Follow installation instructions on https://github.com/mapnik/mapnik/wiki/UbuntuInstallation **Install Mapnik from source** (Mapnik 2.3.x)
+* Create a virtual environment  `mkvirtualenv static_map_generator`
+* Add links to the virtual env  and mapnik packages
+```shell
+ln -s /usr/lib/python2.7/dist-packages/mapnik ~/.virtualenvs/static_map_generator/lib/python2.7/site-packages/mapnik
+ln -s /usr/lib/python2.7/dist-packages/mapnik2 ~/.virtualenvs/static_map_generator/lib/python2.7/site-packages/mapnik2
+```
+* Follow further basic development instructions
+```shell
+(static_map_generator) pip install -r requirements-dev.txt
+(static_map_generator) python setup.py develop
+(static_map_generator) pserve development.ini
+```
+
+Manik is now available on your machine and executable from a virtual python environment.
 
 .. code-block:: bash
     $ pip install -r requirements-dev.txt

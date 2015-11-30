@@ -21,7 +21,9 @@ config_31370 = {
          {
              'type': 'logo',
              'url': 'https://www.onroerenderfgoed.be/assets/img/logo-og.png',
-             'opacity': 0.5
+             'opacity': 0.5,
+            'imagewidth': 100,
+            'imageheight': 100
 
           },
          {
@@ -36,12 +38,6 @@ config_31370 = {
              'url': 'https://geo.onroerenderfgoed.be/geoserver/wms?',
              'layers': 'vioe_geoportaal:landschapsbeheersplannen',
              'featureid': 'landschapsbeheersplannen.3816'
-
-          },
-         {
-             'type': 'wms',
-             'url': 'https://geo.onroerenderfgoed.be/geoserver/wms?',
-             'layers': 'vioe_geoportaal:onbestaande_laag'
 
           },
          {
