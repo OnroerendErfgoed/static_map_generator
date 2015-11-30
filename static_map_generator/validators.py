@@ -103,6 +103,21 @@ def scale_validator(node, value):
         )
 
 
+def gravity_validator(node, value):
+    """
+    Gravity validator
+
+    :param node: The schema node to which this exception relates.
+    :param value: Value to validate.
+    """
+    if value not in ['center', 'north_west', 'north_east', 'south_west', 'south_east']:
+        raise colander.Invalid(
+            node,
+            "{} is not one of the following gravities: 'center', 'north_west', 'north_east', 'south_west', 'south_east'".format(value)
+        )
+
+
+
 def required_validator(param, type, node, cstruct, validator=None):
     """
     Param is required in cstruct for type in node.
@@ -163,8 +178,9 @@ class LayerSchemaNode(colander.MappingSchema):
             optional_validator('opacity', 0.5, node, cstruct, scale_validator)
         elif cstruct['type'] == 'text':
             required_validator('text', 'text', node, cstruct, string_validator)
-            optional_validator('text_color', 'steelblue', node, cstruct, string_validator)
-            optional_validator('font_size', 24, node, cstruct, number_validator)
+            optional_validator('text_color', '#000000', node, cstruct, string_validator)
+            optional_validator('gravity', 'center', node, cstruct, gravity_validator)
+            optional_validator('font_size', 10, node, cstruct, number_validator)
         elif cstruct['type'] == 'logo':
             required_validator('url', 'logo', node, cstruct, uri_validator)
             optional_validator('opacity', 0.5, node, cstruct, scale_validator)

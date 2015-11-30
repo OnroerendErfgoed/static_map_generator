@@ -1,6 +1,6 @@
 import unittest
 from static_map_generator.validators import uri_validator, wkt_validator, geojson_validator, string_validator, \
-    number_validator, scale_validator, required_validator, optional_validator, ConfigSchemaNode
+    number_validator, scale_validator, gravity_validator, required_validator, optional_validator, ConfigSchemaNode
 from colander import Invalid
 
 config = {
@@ -17,7 +17,8 @@ config = {
             "type": "text",
             "text": "This is a test",
             "font_size": 24,
-            "text_color": "#FF3366"
+            "text_color": "#FF3366",
+            "gravity": "north_west"
         },
             {
                 "type": "logo",
@@ -97,6 +98,11 @@ class ValidateParamsTests(unittest.TestCase):
     def test_scale_validator(self):
         scale_validator(test_node, 0.6)
         self.assertRaises(Invalid, scale_validator, test_node, 1.2)
+
+    def test_gravity_validator(self):
+        gravity_validator(test_node, 'center')
+        self.assertRaises(Invalid, gravity_validator, test_node, 'north')
+
 
     def test_optional_validator(self):
         optional_validator('test', 'value', test_node, {}, string_validator)
