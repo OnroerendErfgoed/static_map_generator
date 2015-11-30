@@ -45,21 +45,10 @@ def forbidden_view(exc, request):
     log.debug(exc)
     log.debug(exc.message)
     log.debug(exc.result)
-    # do not allow a user to login if they are already logged in
-    if authenticated_userid(request):
-        err = {
-            'message': 'U bent niet gemachtigd om deze actie uit te voeren.',
-            'errors': []
-        }
-        if exc.result.msg:
-            err['errors'].append(exc.result.msg)
-        request.response.status_int = 403
-        return err
-    else:
-        err = {
-            'message': 'U bent niet gemachtigd om deze actie uit te voeren.',
-            'errors': []
-        }
-        request.response.status_int = 401
-        return err
+    err = {
+        'message': 'U bent niet gemachtigd om deze actie uit te voeren.',
+        'errors': []
+    }
+    request.response.status_int = 401
+    return err
 

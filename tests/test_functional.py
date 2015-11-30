@@ -152,3 +152,9 @@ class RestFunctionalTests(FunctionalTests):
     def test_validationerror(self):
         self.testapp.get('/mock_user')
         self.assertRaises(Exception, self.testapp.post, '/maps', "{}", headers={'Accept': 'application/json'})
+
+    def test_not_authorized(self):
+        res = self.testapp.post('/maps', "{}",
+                                headers={'Accept': 'application/json', 'Content-Type': 'application/json'},
+                                expect_errors=True)
+        self.assertEqual('401 Unauthorized', res.status)
