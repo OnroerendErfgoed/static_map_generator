@@ -21,6 +21,8 @@ class RestView(object):
             params = self.request.json_body
         except AttributeError as e:
             raise HTTPBadRequest(detail="Request bevat geen json body. \n%s" % e)
+        except ValueError as e:
+            raise HTTPBadRequest(detail="Request bevat incorrecte json body. \n%s" % e)
         return params
 
     @staticmethod
@@ -36,13 +38,13 @@ class RestView(object):
                 e.asdict()
             )
 
-    @view_config(route_name='home', request_method='GET')
+    @view_config(route_name='home', request_method='GET', permission='home')
     def home(self):
         return Response(
             "Static_map_generator: service voor het genereren van een statische kaart op basis van verschillende geografische databronnen (wms, wkt, geojson,...)",
             content_type='text/plain', status_int=200)
 
-    @view_config(route_name='maps', request_method='POST', accept='application/json')
+    @view_config(route_name='maps', request_method='POST', accept='application/json', permission='view')
     def maps_by_post(self):
         params = self._get_params()
         config = self.validate_config(params)
