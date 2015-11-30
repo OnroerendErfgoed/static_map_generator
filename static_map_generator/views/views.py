@@ -6,6 +6,8 @@ from static_map_generator.generator import Generator
 from pyramid.response import Response
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPBadRequest
+import colander
+from static_map_generator.validators import ValidationFailure
 
 log = logging.getLogger(__name__)
 
@@ -21,6 +23,19 @@ class RestView(object):
             raise HTTPBadRequest(detail="Request bevat geen json body. \n%s" % e)
         return params
 
+    @staticmethod
+    def validate_config(params):
+        from static_map_generator.validators import (
+            ConfigSchemaNode as config_schema
+        )
+        try:
+            return config_schema().deserialize(params)
+        except colander.Invalid as e:
+            raise ValidationFailure(
+                'De configuratie is niet geldig.',
+                e.asdict()
+            )
+
     @view_config(route_name='home', request_method='GET')
     def home(self):
         return Response(
@@ -29,7 +44,8 @@ class RestView(object):
 
     @view_config(route_name='maps', request_method='POST', accept='application/json')
     def maps_by_post(self):
-        config = self._get_params()
+        params = self._get_params()
+        config = self.validate_config(params)
         res = Response(content_type='image/png')
         res.status = '200 OK'
         res.body = Generator.generateStream(config)

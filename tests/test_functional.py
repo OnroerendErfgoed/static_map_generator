@@ -15,6 +15,7 @@ settings = appconfig(
     name='static_map_generator'
 )
 
+
 class FunctionalTests(unittest.TestCase):
     def setUp(self):
         self.app = main({}, **settings)
@@ -28,42 +29,42 @@ class FunctionalTests(unittest.TestCase):
 class RestFunctionalTests(FunctionalTests):
 
     def _get_params_non_existent(self):
-          return {
-    "params": {
-        "epsg": 31370,
-        "filetype": "png",
-        "width": 500,
-        "height": 500,
-        "bbox": [
-            145000,
-            195000,
-            165000,
-            215000
-        ]
-    },
-    "layers": [{
+        return {
+            "params": {
+                "epsg": 31370,
+                "filetype": "png",
+                "width": 500,
+                "height": 500,
+                "bbox": [
+                    145000,
+                    195000,
+                    165000,
+                    215000
+                ]
+            },
+            "layers": [{
                 "type": "wms",
                 "url": "https://geo.onroerenderfgoed.be/geoserver/wms?",
-              "layers": "vioe_geoportaal:onbestaande_laag"
+                "layers": "vioe_geoportaal:onbestaande_laag"
 
-        }]
-          }
+            }]
+        }
 
     def _get_params1(self):
-          return {
-    "params": {
-        "epsg": 31370,
-        "filetype": "png",
-        "width": 500,
-        "height": 500,
-        "bbox": [
-            145000,
-            195000,
-            165000,
-            215000
-        ]
-    },
-    "layers": [ {
+        return {
+            "params": {
+                "epsg": 31370,
+                "filetype": "png",
+                "width": 500,
+                "height": 500,
+                "bbox": [
+                    145000,
+                    195000,
+                    165000,
+                    215000
+                ]
+            },
+            "layers": [ {
                 "type": "text",
                 "text": "This is a test",
                 "color": "#FF3366",
@@ -75,58 +76,59 @@ class RestFunctionalTests(FunctionalTests):
 
     def _get_params(self):
         return {
-    "params": {
-        "epsg": 31370,
-        "filetype": "png",
-        "width": 500,
-        "height": 500,
-        "bbox": [
-            145000,
-            195000,
-            165000,
-            215000
-        ]
-    },
-    "layers": [
-        {
-                "type": "text",
-                "text": "Copyright OE",
-                "color": "#FF3366",
-                "font_size": 12,
-                "text_color": "#222222",
-                "gravity": "south_east"
-        },
-        {
+            "params": {
+                "epsg": 31370,
+                "filetype": "png",
+                "width": 500,
+                "height": 500,
+                "bbox": [
+                    145000,
+                    195000,
+                    165000,
+                    215000
+                ]
+            },
+            "layers": [
+                {
+                    "type": "text",
+                    "text": "Copyright OE",
+                    "color": "#FF3366",
+                    "font_size": 12,
+                    "text_color": "#222222",
+                    "gravity": "south_east"
+                },
+                {
 
-                "type": "logo",
-                "url": "https://www.onroerenderfgoed.be/assets/img/logo-og.png",
-                "opacity": 0.5
+                    "type": "logo",
+                    "url": "https://www.onroerenderfgoed.be/assets/img/logo-og.png",
+                    "opacity": 0.5
 
-        },
-        {
+                },
+                {
 
-                "type": "wkt",
-                "wkt": "POLYGON ((155000 215000, 160000 210000, 160000 215000, 155000 215000))",
-                "color": "steelblue",
-                "opacity": 0.5
+                    "type": "wkt",
+                    "wkt": "POLYGON ((155000 215000, 160000 210000, 160000 215000, 155000 215000))",
+                    "color": "steelblue",
+                    "opacity": 0.5
 
-        },
-        {
+                },
+                {
 
-                "type": "wms",
-                "url": "https://geo.onroerenderfgoed.be/geoserver/wms?",
-                "layers": "vioe_geoportaal:landschapsbeheersplannen"
+                    "type": "wms",
+                    "url": "https://geo.onroerenderfgoed.be/geoserver/wms?",
+                    "layers": "vioe_geoportaal:landschapsbeheersplannen"
 
-        },
-        {
+                },
+                {
 
-                "type": "wms",
-                "url": "http://geo.api.agiv.be/geodiensten/raadpleegdiensten/GRB-basiskaart/wmsgr?",
-                "layers": "GRB_BSK"
-            }
+                    "type": "wms",
+                    "url": "http://geo.api.agiv.be/geodiensten/raadpleegdiensten/GRB-basiskaart/wmsgr?",
+                    "layers": "GRB_BSK"
+                }
 
-    ]
-}
+            ]
+        }
+
 
     def test_map(self):
         res = self.testapp.post('/maps', json.dumps(self._get_params1()),
@@ -136,19 +138,14 @@ class RestFunctionalTests(FunctionalTests):
 
     def test_notfound(self):
         try:
-            res = self.testapp.post('/notfound', json.dumps(self._get_params()),headers={'Accept': 'application/json'})
-        except Exception as e:
-            self.assertIsInstance(e, AppError)
-        pass
-
-
-    def test_badrequest(self):
-        try:
-            res = self.testapp.post('/maps', json.dumps({'bla':'bla'}),headers={'Accept': 'application/json'})
+            res = self.testapp.post('/notfound', json.dumps(self._get_params()), headers={'Accept': 'application/json'})
         except Exception as e:
             self.assertIsInstance(e, AppError)
         pass
 
     def test_renderror(self):
         data = json.dumps(self._get_params_non_existent())
-        self.assertRaises(Exception,self.testapp.post,'/maps',data ,headers={'Accept': 'application/json'})
+        self.assertRaises(Exception, self.testapp.post, '/maps', data, headers={'Accept': 'application/json'})
+
+    def test_validationerror(self):
+        self.assertRaises(Exception, self.testapp.post, '/maps', "{}", headers={'Accept': 'application/json'})
