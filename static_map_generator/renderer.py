@@ -1,10 +1,8 @@
 import os
 import warnings
 from abc import ABCMeta, abstractmethod
-#from geomet import wkt
-from io import StringIO
+import json
 
-from mapnik._mapnik import Box2d
 from pyramid.httpexceptions import HTTPNotFound
 from requests import ConnectionError
 import requests
@@ -93,13 +91,12 @@ class GeojsonRenderer(Renderer):
         r.symbols.append(point_symbolizer)
         s.rules.append(r)
         m.append_style('My Style', s)
-        ds = mapnik.Ogr(string='%s' % kwargs['geojson'], layer='OGRGeoJSON')
-        # ds = mapnik.Datasource(**{"type": "geojson", "inline": geojson})
+        ds = mapnik.Ogr(string=json.dumps(kwargs['geojson']), layer='OGRGeoJSON')
         layer = mapnik.Layer('wkt', '+init=epsg:' + str(kwargs['epsg']))
         layer.datasource = ds
         layer.styles.append('My Style')
         m.layers.append(layer)
-        extent = Box2d(kwargs['bbox'][0], kwargs['bbox'][1], kwargs['bbox'][2], kwargs['bbox'][3])
+        extent = mapnik.Box2d(kwargs['bbox'][0], kwargs['bbox'][1], kwargs['bbox'][2], kwargs['bbox'][3])
         m.zoom_to_box(extent)
         mapnik.render_to_file(m, str(kwargs['filename']), str(kwargs['filetype']))
 
