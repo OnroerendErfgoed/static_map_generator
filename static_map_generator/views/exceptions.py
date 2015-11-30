@@ -2,8 +2,6 @@
 import sys
 
 import logging
-
-from pyramid.security import authenticated_userid
 from pyramid.view import notfound_view_config, view_config, forbidden_view_config
 from static_map_generator.validators import ValidationFailure
 
