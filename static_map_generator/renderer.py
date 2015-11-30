@@ -128,7 +128,6 @@ class LogoRenderer(Renderer):
     def render(self, **kwargs):
 
         response = requests.get(kwargs['url'], stream=True)
-        # img = Image.open(StringIO(response.content))
         with Image(blob=response.content) as img:
             img.resize(width=kwargs['width'], height=kwargs['height'])
             img.transparentize(1 - kwargs['opacity'])
