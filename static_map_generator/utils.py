@@ -1,8 +1,14 @@
 import json
+
+import numpy
+import os
+
 from shapely.geometry import shape
 from shapely.ops import unary_union
 from shapely.wkt import loads
+from wand.color import Color
 from wand.exceptions import WandException
+from wand.image import Font
 from wand.image import Image
 import geojson
 import shapely.wkt
@@ -42,28 +48,38 @@ def combine_layers(images, filename):
 #     geom = loads(wkt)
 #     return geom.buffer(buffer)
 
-def position_figure(width, height, figure, gravity, filename):
+def position_figure(width, height, figure, gravity, offset, filename):
+    offset = offset.split(",")
+    offset_left = int(offset[0])
+    offset_top = int(offset[1])
 
     if gravity == 'north_west':
-        left = 0
-        top = 0
+        left = 0 + offset_left
+        top = 0 + offset_top
     elif gravity == 'north_east':
-        left = width - figure.width
-        top = 0
+        left = width - figure.width - offset_left
+        top = 0 + offset_top
     elif gravity == 'south_west':
-        left = 0
-        top = height - figure.height
+        left = 0 + offset_left
+        top = height - figure.height - offset_top
     elif gravity == 'south_east':
-        left = width - figure.width
-        top = height - figure.height
+        left = width - figure.width - offset_left
+        top = height - figure.height - offset_top
     elif gravity == 'center':
-        left = width/2 - figure.width/2
-        top = height/2 - figure.height/2
+        left = width/2 - figure.width/2 + offset_left
+        top = height/2 - figure.height/2 + offset_top
 
     with Image(width=width, height=height) as img:
         img.composite(figure, left=left, top=top)
         img.save(filename=filename)
 
+def define_scale_number(real_width, width, scalebar_width):
+    scale_number = float(real_width*scalebar_width)/width
+    if scale_number/1000 > 5:
+        scale_number = str(int(scale_number/1000)) + ' km'
+    else:
+        scale_number = str(int(scale_number)) + ' m'
+    return scale_number
 
 def merge_dicts(*dict_args):
     '''

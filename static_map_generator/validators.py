@@ -183,7 +183,18 @@ class LayerSchemaNode(colander.MappingSchema):
             optional_validator('font_size', 10, node, cstruct, number_validator)
         elif cstruct['type'] == 'logo':
             required_validator('url', 'logo', node, cstruct, uri_validator)
-            optional_validator('opacity', 0.5, node, cstruct, scale_validator)
+            required_validator('imagewidth', 'logo', node, cstruct, number_validator)
+            required_validator('imageheight', 'logo', node, cstruct, number_validator)
+            optional_validator('opacity', 1, node, cstruct, scale_validator)
+            optional_validator('gravity', 'south_east', node, cstruct, string_validator)
+            optional_validator('offset', '0,0', node, cstruct, string_validator)
+        elif cstruct['type'] == 'scale':
+            required_validator('imagewidth', 'logo', node, cstruct, number_validator)
+            required_validator('imageheight', 'logo', node, cstruct, number_validator)
+            optional_validator('opacity', 1, node, cstruct, scale_validator)
+            optional_validator('gravity', 'south_west', node, cstruct, string_validator)
+            optional_validator('offset', '0,0', node, cstruct, string_validator)
+            optional_validator('font-size', 10 , node, cstruct, number_validator)
 
 
 class Layers(colander.SequenceSchema):

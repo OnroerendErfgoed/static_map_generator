@@ -8,11 +8,12 @@ from requests import ConnectionError
 import requests
 
 import mapnik
+import numpy
 from wand.color import Color
 from wand.display import display
 from wand.image import Image
 from wand.image import Font
-from static_map_generator.utils import merge_dicts, convert_wkt_to_geojson, position_figure
+from static_map_generator.utils import merge_dicts, convert_wkt_to_geojson, position_figure, define_scale_number
 
 
 class Renderer():
@@ -115,12 +116,6 @@ class WktRenderer(Renderer):
 
 class TextRenderer(Renderer):
     def render(self, **kwargs):
-        defaults = {
-            "gravity": "center",
-            "font_size": 10,
-            "text_color": "#000000"
-        }
-        kwargs = merge_dicts(defaults, kwargs)
 
         with Image(width=kwargs['width'],
                    height=kwargs['height']) as image:
@@ -136,17 +131,11 @@ class TextRenderer(Renderer):
 class LogoRenderer(Renderer):
     def render(self, **kwargs):
 
-        defaults = {
-            "gravity": "center",
-            "opacity": 1
-        }
-        kwargs = merge_dicts(defaults, kwargs)
-
         response = requests.get(kwargs['url'], stream=True)
         with Image(blob=response.content) as img:
             img.resize(width=kwargs['imagewidth'], height=kwargs['imageheight'])
             img.transparentize(1 - kwargs['opacity'])
-            position_figure(kwargs['width'], kwargs['height'], img, kwargs['gravity'], kwargs['filename'])
+            position_figure(kwargs['width'], kwargs['height'], img, kwargs['gravity'], kwargs['offset'],  kwargs['filename'])
 
     def type(self):
         return "logo"
@@ -155,30 +144,23 @@ class LogoRenderer(Renderer):
 class ScaleRenderer(Renderer):
         #todo: this is just some test implementation!
     def render(self, **kwargs):
-        warnings.warn("still in development, do not use the ScaleRenderer in production", UserWarning)
+        if kwargs['epsg']!= 31370:
+            raise NotImplementedError("This method is not yet implemented for epsg other than 31370")
 
-        defaults = {
-            "gravity": "center",
-            "opacity": 1
-        }
-        kwargs = merge_dicts(defaults, kwargs)
-
-        # first the fraction between image size and real world has to be calculated so that we know how we must resize the scalebar.png.
-        # Afterwards the scalebar has to be positioned on a new image with the right width/heigth
-
-        #calculate fraction for scalebar
-        #todo: calculation
-
-        #create the scalebar
         here = os.path.abspath(os.path.dirname(__file__))
         path = os.path.join(here, 'fixtures/scalebar.png')
         with Image(filename=path) as scale_img:
-            scalewidth = kwargs['width']/10
-            scaleheight = scale_img.height*scalewidth/scale_img.width
-            scale_img.resize(width=scalewidth, height =scaleheight)
+            # scale_number = str((kwargs['bbox'][2]- kwargs['bbox'][0])/kwargs['divid']) + ' m'
+            # scalebar_width = int(kwargs['width']/kwargs['divid'])
+            # scalebar_height = (scale_img.height*scalebar_width/scale_img.width)
+            # scale_img.resize(width=scalebar_width, height = scalebar_height)
+            scale_number = define_scale_number(kwargs['bbox'][2]- kwargs['bbox'][0], kwargs['width'], kwargs['imagewidth'])
+            scale_img.resize(width=kwargs['imagewidth'], height = kwargs['imageheight'])
             scale_img.transparentize(1 - kwargs['opacity'])
-            #position the scalebar
-            position_figure(kwargs['width'], kwargs['height'], scale_img, kwargs['gravity'], kwargs['filename'])
+            font = Font(path='/Library/Fonts/Verdana.ttf', size=kwargs['font_size'], color=Color('#000000'))
+            scale_img.caption(scale_number, left=0, top=0,
+                          font=font, gravity='center')
+            position_figure(kwargs['width'], kwargs['height'], scale_img, kwargs['gravity'], kwargs['offset'], kwargs['filename'])
 
 
     def type(self):

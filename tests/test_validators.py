@@ -23,7 +23,11 @@ config = {
             {
                 "type": "logo",
                 "url": "https://www.onroerenderfgoed.be/assets/img/logo-og.png",
-                "opacity": 0.5
+                "opacity": 0.5,
+                "imagewidth": 100,
+                "imageheight": 100,
+                "offset": "0,0",
+                "gravity": "south_east"
 
             },
             {

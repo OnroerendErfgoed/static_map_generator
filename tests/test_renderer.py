@@ -1,6 +1,7 @@
 import os
 import unittest
 import tempdir
+import numpy
 from paste.deploy import appconfig
 from wand.image import Image
 from static_map_generator.renderer import Renderer, WmsRenderer, LogoRenderer, WktRenderer, TextRenderer, \
@@ -108,7 +109,8 @@ class UtilsTests(unittest.TestCase):
             'filetype': 'png',
             'width': 500,
             'height': 500,
-            'bbox': [145000, 195000, 165000, 215000]
+            'bbox': [145000, 195000, 165000, 215000],
+                'offset': '0,0'
          }
         )
         self.assertTrue(os.path.isfile(self.file_path))
@@ -212,13 +214,17 @@ class UtilsTests(unittest.TestCase):
             **{
             'type': 'scale',
              'gravity': 'south_west',
+             'offset':'10,20',
              'opacity': 1,
             'filename': self.file_path,
             'epsg': 31370,
             'filetype': 'png',
-            'width': 500,
-            'height': 500,
-            'bbox': [100000, 100000, 200000, 200000]
+            'width': 750,
+            'height': 750,
+            'bbox': [100000, 100000, 200000, 200000],
+            'font_size': 11,
+            'imagewidth': 200,
+            'imageheight': 50
          })
         self.assertIsInstance(renderer, ScaleRenderer)
         self.assertEquals(renderer.type(), "scale")

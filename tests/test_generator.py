@@ -32,7 +32,8 @@ class MapMakerTests(unittest.TestCase):
                     'color': '#FF3366',
                     'borderwidth': 0,
                     'font_size': 24,
-                    'text_color': '#FF3366'
+                    'text_color': '#FF3366',
+                    'gravity': 'center'
 
                   }
                  ]
@@ -61,7 +62,8 @@ class MapMakerTests(unittest.TestCase):
                     'color': '#FF3366',
                     'borderwidth': 0,
                     'font_size': 24,
-                    'text_color': '#FF3366'
+                    'text_color': '#FF3366',
+                    'gravity': 'center'
 
                   }
                  ]
@@ -124,7 +126,8 @@ class MapMakerTests(unittest.TestCase):
             'color': '#FF3366',
             'borderwidth': 1,
             'font_size': 24,
-            'text_color': '#FF3366'
+            'text_color': '#FF3366',
+            'gravity': 'center'
 
           },
             {
@@ -137,7 +140,8 @@ class MapMakerTests(unittest.TestCase):
              'opacity': 0.5,
              'imagewidth': 100,
              'imageheight': 100,
-             'gravity': 'south_west'
+             'gravity': 'south_west',
+             'offset': '0,0'
 
           },
          {

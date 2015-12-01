@@ -5,7 +5,7 @@ from wand.color import Color
 from wand.display import display
 from wand.image import Image
 from static_map_generator.utils import convert_filetype, combine_layers, convert_geojson_to_wkt, convert_wkt_to_geojson, \
-    position_figure
+    position_figure, define_scale_number
 
 
 class UtilsTests(unittest.TestCase):
@@ -48,11 +48,20 @@ class UtilsTests(unittest.TestCase):
     def test_position_figure(self):
         file_path = os.path.join(self.tempdir.name, 'position.png')
         with Image(width=200, height=100, background=Color('red')) as img:
-            position_figure(500, 500, img, 'center', file_path)
-            position_figure(500, 500, img, 'north_west', file_path)
-            position_figure(500, 500, img, 'north_east', file_path)
-            position_figure(500, 500, img, 'south_west', file_path)
-            position_figure(500, 500, img, 'south_east', file_path)
+            position_figure(500, 500, img, 'center','0,0', file_path)
+            position_figure(500, 500, img, 'north_west','0,0', file_path)
+            position_figure(500, 500, img, 'north_east','0,0', file_path)
+            position_figure(500, 500, img, 'south_west','0,0', file_path)
+            position_figure(500, 500, img, 'south_east','0,0', file_path)
+
+    def test_define_scale_number(self):
+        print(define_scale_number(10000, 500, 150))
+        print(define_scale_number(1000, 200, 150))
+        print(define_scale_number(100000, 750, 150))
+        print(define_scale_number(10000, 500, 100))
+        print(define_scale_number(10000, 611, 150))
+        print(define_scale_number(10000, 245, 150))
+        print(define_scale_number(10000, 1000, 150))
 
 
 
