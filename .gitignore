@@ -57,3 +57,8 @@ bower_components
 
 #dogpile
 dogpile_data
+
+
+
+# Private .ini config
+development-private.ini

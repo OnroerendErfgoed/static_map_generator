@@ -129,8 +129,8 @@ class RestFunctionalTests(FunctionalTests):
             ]
         }
 
-
     def test_map(self):
+        self.testapp.get('/mock_user')
         res = self.testapp.post('/maps', json.dumps(self._get_params1()),
                                 headers={'Accept': 'application/json'})
         self.assertIn('image/png', res.headers['Content-Type'])
@@ -138,14 +138,23 @@ class RestFunctionalTests(FunctionalTests):
 
     def test_notfound(self):
         try:
+            self.testapp.get('/mock_user')
             res = self.testapp.post('/notfound', json.dumps(self._get_params()), headers={'Accept': 'application/json'})
         except Exception as e:
             self.assertIsInstance(e, AppError)
         pass
 
     def test_renderror(self):
+        self.testapp.get('/mock_user')
         data = json.dumps(self._get_params_non_existent())
         self.assertRaises(Exception, self.testapp.post, '/maps', data, headers={'Accept': 'application/json'})
 
     def test_validationerror(self):
+        self.testapp.get('/mock_user')
         self.assertRaises(Exception, self.testapp.post, '/maps', "{}", headers={'Accept': 'application/json'})
+
+    def test_not_authorized(self):
+        res = self.testapp.post('/maps', "{}",
+                                headers={'Accept': 'application/json', 'Content-Type': 'application/json'},
+                                expect_errors=True)
+        self.assertEqual('401 Unauthorized', res.status)

@@ -121,7 +121,6 @@ class ValidateParamsTests(unittest.TestCase):
         gravity_validator(test_node, 'center')
         self.assertRaises(Invalid, gravity_validator, test_node, 'north')
 
-
     def test_optional_validator(self):
         optional_validator('test', 'value', test_node, {}, string_validator)
         self.assertRaises(Invalid, optional_validator, 'test', 'value', test_node, {'test': 'value'}, number_validator)
