@@ -7,9 +7,9 @@ import geojson
 
 
 class ValidationFailure(Exception):
-    '''
+    """
     Custom Exception for data validation errors.
-    '''
+    """
 
     def __init__(self, msg, errors):
         self.msg = msg
@@ -117,7 +117,6 @@ def gravity_validator(node, value):
         )
 
 
-
 def required_validator(param, type, node, cstruct, validator=None):
     """
     Param is required in cstruct for type in node.
@@ -188,13 +187,13 @@ class LayerSchemaNode(colander.MappingSchema):
             optional_validator('opacity', 1, node, cstruct, scale_validator)
             optional_validator('gravity', 'south_east', node, cstruct, string_validator)
             optional_validator('offset', '0,0', node, cstruct, string_validator)
-        elif cstruct['type'] == 'scale':
-            required_validator('imagewidth', 'logo', node, cstruct, number_validator)
-            required_validator('imageheight', 'logo', node, cstruct, number_validator)
-            optional_validator('opacity', 1, node, cstruct, scale_validator)
-            optional_validator('gravity', 'south_west', node, cstruct, string_validator)
-            optional_validator('offset', '0,0', node, cstruct, string_validator)
-            optional_validator('font-size', 10 , node, cstruct, number_validator)
+        # elif cstruct['type'] == 'scale':
+        #     required_validator('imagewidth', 'logo', node, cstruct, number_validator)
+        #     required_validator('imageheight', 'logo', node, cstruct, number_validator)
+        #     optional_validator('opacity', 1, node, cstruct, scale_validator)
+        #     optional_validator('gravity', 'south_west', node, cstruct, string_validator)
+        #     optional_validator('offset', '0,0', node, cstruct, string_validator)
+        #     optional_validator('font-size', 10 , node, cstruct, number_validator)
 
 
 class Layers(colander.SequenceSchema):
