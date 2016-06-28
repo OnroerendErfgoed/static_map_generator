@@ -8,7 +8,6 @@ from requests import ConnectionError
 import requests
 
 import mapnik
-import numpy
 from wand.color import Color
 from wand.display import display
 from wand.image import Image

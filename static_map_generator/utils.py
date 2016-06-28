@@ -1,6 +1,5 @@
 import json
 
-import numpy
 import os
 
 from shapely.geometry import shape
