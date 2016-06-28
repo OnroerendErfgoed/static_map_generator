@@ -5,9 +5,8 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.rst')) as f:
     README = f.read()
-# with open(os.path.join(here, 'CHANGES.txt')) as f:
-#     CHANGES = f.read()
-CHANGES = "changes"
+with open(os.path.join(here, 'CHANGES.txt')) as f:
+    CHANGES = f.read()
 
 requires = [
       'pyramid',
@@ -15,7 +14,8 @@ requires = [
       'Wand',
       'argparse',
       'requests',
-      'wsgiref']
+      'wsgiref'
+      ]
 
 setup(name='static_map_generator',
       version='0.0.0.dev',
@@ -23,6 +23,7 @@ setup(name='static_map_generator',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
         "Programming Language :: Python",
+        "Framework :: Pyramid"
         ],
       author='Flanders Heritage Agency',
       author_email='ict@onroerenderfgoed.be',
