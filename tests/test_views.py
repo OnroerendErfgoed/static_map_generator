@@ -14,6 +14,7 @@ except:
 
 from static_map_generator.views.views import RestView
 from static_map_generator.validators import ValidationFailure
+from static_map_generator.views.exceptions import internal_server_error
 
 
 settings = appconfig('config:' + os.path.join(os.path.dirname(__file__), 'test.ini'))
@@ -58,3 +59,9 @@ class ViewTests(unittest.TestCase):
         res = rest_view.maps_by_post()
         self.assertEqual('200 OK', res.status)
         self.assertIsNotNone(res.body)
+
+    def test_internal_error(self):
+        res = internal_server_error(Exception(), self.request)
+        expected_msg = 'Er ging iets fout in de server. Onze excuses. Stel je fouten vast of heb je een vraag? ' \
+                       'Mail dan naar ict@onroerenderfgoed.be'
+        self.assertDictEqual({'detail': '', 'message': expected_msg}, res)

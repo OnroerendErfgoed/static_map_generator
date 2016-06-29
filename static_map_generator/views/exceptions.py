@@ -17,10 +17,7 @@ def not_found(request):
     }
 
 
-@view_config(
-    context=ValidationFailure,
-    renderer='json'
-)
+@view_config(context=ValidationFailure, renderer='json')
 def failed_validation(exc, request):
     log.debug(exc.msg)
     log.debug(exc.errors)
@@ -34,7 +31,9 @@ def failed_validation(exc, request):
 def internal_server_error(exc, request):
     log.error(str(exc), exc_info=sys.exc_info())
     request.response.status_int = 500
-    return {'message': 'Er ging iets fout in de server. Onze excuses.'}
+    return {'message': 'Er ging iets fout in de server. Onze excuses. '
+                       'Stel je fouten vast of heb je een vraag? Mail dan naar ict@onroerenderfgoed.be',
+            'detail': str(exc)}
 
 
 @forbidden_view_config(accept='application/json', renderer='json')
