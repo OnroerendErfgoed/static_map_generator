@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from pyramid.security import (
     Allow,
     Everyone
@@ -10,14 +11,14 @@ log = logging.getLogger(__name__)
 class MapsFactory(object):
     __acl__ = [
         (Allow, Everyone, 'home'),
-        (Allow, 'vioe-static-map-generator:static-map-generator-lezer', 'view')
+        (Allow, 'vioe-static-map-generator:beheerder', 'admin')
     ]
 
 
 class RootFactory(object):
     __acl__ = [
         (Allow, Everyone, 'home'),
-        (Allow, 'vioe-static-map-generator:static-map-generator-lezer', 'view')
+        (Allow, 'vioe-static-map-generator:beheerder', 'admin')
     ]
 
     _factories = {
