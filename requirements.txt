@@ -19,7 +19,15 @@ colander==1.2
 rfc3987==1.3.5
 
 # authentication
-#oeauth==0.2.6
-#pyramid_oeauth==0.6.2
--e git+ssh://git@github.com/OnroerendErfgoed/pyramid_oeauth.git@0.6.2#egg=pyramid-oeauth
--e git+ssh://git@github.com/OnroerendErfgoed/oeauth.git@0.2.6#egg=oeauth
+oeauth==0.2.6
+pyramid_oeauth==0.6.2
+#-e git+ssh://git@github.com/OnroerendErfgoed/pyramid_oeauth.git@0.6.2#egg=pyramid-oeauth
+#-e git+ssh://git@github.com/OnroerendErfgoed/oeauth.git@0.2.6#egg=oeauth
+
+# caching
+dogpile.cache==0.5.7
+dcextensions==0.0.1
+
+# redis
+redis==2.10.5
+pyramid_redis==0.1.4
