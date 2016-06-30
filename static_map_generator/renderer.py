@@ -72,8 +72,7 @@ class WmsRenderer(Renderer):
             raise HTTPNotFound("Service not found (status_code 404) - Request: %s - Params: %s" % (kwargs['url'], params))
         if res.content[2:5]=='xml':
             raise ValueError("Exception occured - Request: %s - Params: %s -  Reason: %s" % (kwargs['url'], params, res.content))
-        with open(kwargs['filename'], 'wb') as im:
-                im.write(res.content)
+        return res.content
 
     def type(self):
         return "wms"
@@ -81,32 +80,15 @@ class WmsRenderer(Renderer):
 
 class GeojsonRenderer(Renderer):
     def render(self, **kwargs):
-        m = mapnik.Map(kwargs['width'], kwargs['height'], '+init=epsg:' + str(kwargs['epsg']))
-        s = mapnik.Style()
-        r = mapnik.Rule()
-        polygon_symbolizer = mapnik.PolygonSymbolizer(mapnik.Color(str(kwargs['color'])))
-        polygon_symbolizer.fill_opacity = kwargs['opacity']
-        r.symbols.append(polygon_symbolizer)
-        line_symbolizer = mapnik.LineSymbolizer(mapnik.Color('rgb(50%,50%,50%)'), 1.0)
-        r.symbols.append(line_symbolizer)
-        point_symbolizer = mapnik.PointSymbolizer()
-        r.symbols.append(point_symbolizer)
-        s.rules.append(r)
-        m.append_style('My Style', s)
-        # ds = mapnik.Ogr(string=json.dumps(kwargs['geojson']), layer='OGRGeoJSON')
-        testgeojson = { "type": "Feature", "properties": {}, "geometry": {}}
-        testgeojson['geometry'] = kwargs['geojson']
+        # fix to create valid geojson from contour
+        geojson = { "type": "Feature", "properties": {}, "geometry": {}}
+        geojson['geometry'] = kwargs['geojson']
         ds = mapnik.MemoryDatasource()
-        context = mapnik.Context()
-        feature = mapnik.Feature.from_geojson(json.dumps(testgeojson), context)
+        feature = mapnik.Feature.from_geojson(json.dumps(geojson), mapnik.Context())
         ds.add_feature(feature)
-        layer = mapnik.Layer('wkt', '+init=epsg:' + str(kwargs['epsg']))
+        layer = mapnik.Layer('geojson' + str(kwargs['idx']), '+init=epsg:' + str(kwargs['epsg']))
         layer.datasource = ds
-        layer.styles.append('My Style')
-        m.layers.append(layer)
-        extent = mapnik.Box2d(kwargs['bbox'][0], kwargs['bbox'][1], kwargs['bbox'][2], kwargs['bbox'][3])
-        m.zoom_to_box(extent)
-        mapnik.render_to_file(m, str(kwargs['filename']), str(kwargs['filetype']))
+        return layer
 
     def type(self):
         return "geojson"
