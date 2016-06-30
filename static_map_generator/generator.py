@@ -2,6 +2,7 @@ import logging
 import os
 import tempdir
 import mapnik
+import base64
 from static_map_generator.renderer import Renderer
 from static_map_generator.utils import merge_dicts
 
@@ -84,3 +85,14 @@ class Generator():
 
         with open(image_file, 'rb') as f:
             return f.read()
+
+    @staticmethod
+    def generate_base64(config):
+        temp = tempdir.TempDir()
+        config['params']['tempdir'] = temp.name
+        image_file = Generator.generate(config)
+
+        with open(image_file, "rb") as image_file:
+            return base64.b64encode(image_file.read())
+        # with open(image_file, 'rb') as f:
+        #     return f.read()

@@ -2,6 +2,7 @@
 
 from pyramid.config import Configurator
 from pyramid.session import SignedCookieSessionFactory
+from static_map_generator.renderer import json_item_renderer
 
 
 def includeme(config):
@@ -18,6 +19,7 @@ def includeme(config):
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_route('home', '/')
     config.add_route('maps', '/maps', traverse='/maps')
+    config.add_renderer('itemjson', json_item_renderer)
 
     # Add authn/authz
     config.include('pyramid_oeauth')

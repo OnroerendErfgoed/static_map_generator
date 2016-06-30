@@ -6,6 +6,7 @@ Adapters to help render map layers
 from abc import ABCMeta, abstractmethod
 import json
 from pyramid.httpexceptions import HTTPNotFound
+from pyramid.renderers import JSON
 from requests.packages.urllib3.connection import ConnectionError
 import requests
 import mapnik
@@ -15,6 +16,8 @@ import mapnik
 # from wand.image import Font
 from static_map_generator.utils import merge_dicts
 # from static_map_generator.utils import convert_wkt_to_geojson, position_figure, define_scale_number
+
+json_item_renderer = JSON()
 
 
 class Renderer(object):

@@ -45,14 +45,23 @@ class RestView(object):
             "geografische databronnen (wms, wkt, geojson,...)",
             content_type='text/plain', status_int=200)
 
-    @view_config(route_name='maps', request_method='POST', accept='application/json', permission='admin')
-    def maps_by_post(self):
+    @view_config(route_name='maps', request_method='POST', accept='application/octet-stream', permission='admin')
+    def maps_by_post_stream(self):
         params = self._get_params()
         config = self.validate_config(params)
         res = Response(content_type='image/png')
         res.status = '200 OK'
         res.body = Generator.generate_stream(config)
         return res
+
+    @view_config(route_name='maps', request_method='POST', accept='application/json', renderer='itemjson', permission='admin')
+    def maps_by_post_base64(self):
+        params = self._get_params()
+        config = self.validate_config(params)
+        self.request.response.status = 201
+        return {
+            'image':  Generator.generate_base64(config)
+        }
 
 
 
