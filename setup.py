@@ -1,11 +1,12 @@
 import os
 
 from setuptools import setup, find_packages
+from codecs import open
 
 here = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(here, 'README.rst')) as f:
+with open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
     README = f.read()
-with open(os.path.join(here, 'CHANGES.txt')) as f:
+with open(os.path.join(here, 'CHANGES.txt'), encoding='utf-8') as f:
     CHANGES = f.read()
 
 requires = [
@@ -27,7 +28,7 @@ setup(name='static_map_generator',
         ],
       author='Flanders Heritage Agency',
       author_email='ict@onroerenderfgoed.be',
-      url='',
+      url='https://github.com/OnroerendErfgoed/static_map_generator',
       keywords='',
       packages=find_packages(),
       include_package_data=True,
