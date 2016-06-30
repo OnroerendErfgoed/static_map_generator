@@ -1,11 +1,12 @@
 import os
 import unittest
 import tempdir
-from wand.color import Color
-from wand.display import display
-from wand.image import Image
-from static_map_generator.utils import convert_filetype, combine_layers, convert_geojson_to_wkt, convert_wkt_to_geojson, \
-    position_figure, define_scale_number
+# from wand.color import Color
+# from wand.display import display
+# from wand.image import Image
+from static_map_generator.utils import merge_dicts
+# from static_map_generator.utils import convert_filetype, combine_layers, convert_geojson_to_wkt, \
+#     convert_wkt_to_geojson, position_figure, define_scale_number
 
 
 class UtilsTests(unittest.TestCase):
@@ -16,6 +17,12 @@ class UtilsTests(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    def test_merge_dicts(self):
+        x = {'a': 1, 'b': 2}
+        y = {'b': 3, 'c': 4}
+        z = merge_dicts(x, y)
+        self.assertEquals(z, {'a': 1, 'b': 3, 'c': 4})
 
     # def test_convert_filetype(self):
     #     file_path = os.path.join(self.tempdir.name, 'filepath.jpg')
