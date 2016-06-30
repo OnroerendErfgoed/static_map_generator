@@ -1,10 +1,13 @@
 import os
 import unittest
+import responses
+import json
 import tempdir
 from paste.deploy import appconfig
-from wand.image import Image
-from static_map_generator.renderer import Renderer, WmsRenderer, LogoRenderer, WktRenderer, TextRenderer, \
-    GeojsonRenderer, ScaleRenderer, LegendRenderer, DefaultRenderer
+# from wand.image import Image
+from static_map_generator.renderer import Renderer, WmsRenderer, DefaultRenderer, GeojsonRenderer
+# from static_map_generator.renderer import LogoRenderer, WktRenderer, TextRenderer, \
+#     ScaleRenderer, LegendRenderer, DefaultRenderer
 
 TEST_DIR = os.path.dirname(__file__)
 settings = appconfig(
@@ -12,21 +15,49 @@ settings = appconfig(
     name='static_map_generator'
 )
 
-class UtilsTests(unittest.TestCase):
+
+class TestRenderer(unittest.TestCase):
 
     def setUp(self):
-        self.tempdir = tempdir.TempDir()
-        self.here = os.path.abspath(os.path.dirname(__file__))
-        self.file_path = os.path.join(self.tempdir.name, 'file.png')
+        # self.tempdir = tempdir.TempDir()
+        # self.here = os.path.abspath(os.path.dirname(__file__))
+        # self.file_path = os.path.join(self.tempdir.name, 'file.png')
+        def request_callback(request):
+            resp_body = {"uri": "https://id.erfgoed.net/poststukken/5"}
+            headers = {"content_type": 'application/json',
+                       "location": "https://postregistratie.onroerenderfgoed.be/poststukken/5"}
+            return 201, headers, json.dumps(resp_body)
+
+        responses.add_callback(
+            responses.POST, 'https://postregistratie.onroerenderfgoed.be/poststukken',
+            callback=request_callback,
+            content_type='application/json',
+        )
 
     def tearDown(self):
         pass
 
-    # def test_wms_renderer(self):
+    def test_wms_renderer(self):
+        renderer = Renderer.factory("wms")
+        self.assertIsInstance(renderer, WmsRenderer)
+        self.assertEquals(renderer.type(), "wms")
+
+    # def test_create_wms_layer(self):
     #     renderer = Renderer.factory("wms")
-    #     self.assertIsInstance(renderer, WmsRenderer)
-    #     self.assertEquals(renderer.type(), "wms")
-    #
+    #     renderer.render(
+    #         **{
+    #             'type': 'wms',
+    #             'url': 'http://non_existant/geoserver/wms?',
+    #             'layers': 'vioe_geoportaal:onbestaande_laag',
+    #             'filename': 'filename',
+    #             'epsg': 31370,
+    #             'filetype': 'png',
+    #             'width': 500,
+    #             'height': 500,
+    #             'bbox': [145000, 195000, 165000, 215000]
+    #         }
+    #     )
+
     # def test_wms_renderer_errors(self):
     #     renderer = Renderer.factory("wms")
     #
@@ -116,11 +147,11 @@ class UtilsTests(unittest.TestCase):
     #     image = Image(filename=self.file_path)
     #     self.assertIsInstance(image, Image)
     #
-    # def test_geojson_renderer(self):
-    #     renderer = Renderer.factory("geojson")
-    #     self.assertIsInstance(renderer, GeojsonRenderer)
-    #     self.assertEquals(renderer.type(), "geojson")
-    #
+    def test_geojson_renderer(self):
+        renderer = Renderer.factory("geojson")
+        self.assertIsInstance(renderer, GeojsonRenderer)
+        self.assertEquals(renderer.type(), "geojson")
+
     # def test_multipoint_renderer_render(self):
     #     renderer = Renderer.factory("wkt")
     #     renderer.render(
@@ -238,8 +269,8 @@ class UtilsTests(unittest.TestCase):
     #     self.assertRaises(NotImplementedError, renderer.render)
     #
     #
-    # def test_default_renderer(self):
-    #     renderer = Renderer.factory("")
-    #     self.assertIsInstance(renderer, DefaultRenderer)
-    #     self.assertEquals(renderer.type(), "default")
-    #     self.assertRaises(NotImplementedError, renderer.render)
+    def test_default_renderer(self):
+        renderer = Renderer.factory("foo")
+        self.assertIsInstance(renderer, DefaultRenderer)
+        self.assertEquals(renderer.type(), "default")
+        self.assertRaises(NotImplementedError, renderer.render)
