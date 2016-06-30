@@ -15,7 +15,9 @@ requires = [
       'Wand',
       'argparse',
       'requests',
-      'wsgiref'
+      'wsgiref',
+      'colander',
+      'rfc3987'
       ]
 
 setup(name='static_map_generator',
