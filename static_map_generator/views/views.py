@@ -51,7 +51,7 @@ class RestView(object):
         config = self.validate_config(params)
         res = Response(content_type='image/png')
         res.status = '200 OK'
-        res.body = Generator.generateStream(config)
+        res.body = Generator.generate_stream(config)
         return res
 
 
