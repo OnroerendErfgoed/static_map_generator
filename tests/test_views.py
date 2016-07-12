@@ -56,9 +56,15 @@ class ViewTests(unittest.TestCase):
     def test_maps_by_post(self):
         self.request.json_body = grb_and_geojson
         rest_view = RestView(self.request)
-        res = rest_view.maps_by_post()
+        res = rest_view.maps_by_post_stream()
         self.assertEqual('200 OK', res.status)
         self.assertIsNotNone(res.body)
+
+    def test_maps_by_post_base64(self):
+        self.request.json_body = grb_and_geojson
+        rest_view = RestView(self.request)
+        res = rest_view.maps_by_post_base64()
+        self.assertIsNotNone(res['image'])
 
     def test_internal_error(self):
         res = internal_server_error(Exception(), self.request)
