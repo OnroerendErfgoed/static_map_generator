@@ -213,7 +213,8 @@ class ParamsSchemaNode(colander.MappingSchema):
         validator=colander.Length(4, 50)
     )
     epsg = colander.SchemaNode(
-        colander.Integer()
+        colander.Integer(),
+        validator=colander.OneOf([31370])
     )
     filetype = colander.SchemaNode(
         colander.String(),
@@ -228,6 +229,17 @@ class ParamsSchemaNode(colander.MappingSchema):
     height = colander.SchemaNode(
         colander.Integer()
     )
+
+    def validator(self, node, cstruct):
+        x1, y1, x2, y2 = cstruct['bbox']
+        scale_image = float(cstruct['height'])/float(cstruct['width'])
+        scale_bbox = float(y2-y1)/float(x2-x1)
+        if scale_image < scale_bbox:
+            x = (((y2-y1)/scale_image) - x2 + x1)/2
+            cstruct['bbox'] = [x1 - x, y1, x2 + x, y2]
+        elif scale_image > scale_bbox:
+            y = ((scale_image * (x2-x1)) - y2 + y1)/2
+            cstruct['bbox'] = [x1, y1 - y, x2, y2 + y]
 
 
 class ConfigSchemaNode(colander.MappingSchema):

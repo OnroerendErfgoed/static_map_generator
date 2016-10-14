@@ -27,6 +27,7 @@ def failed_validation(exc, request):
     return {'message': exc.msg, 'errors': formated_errors}
 
 
+@view_config(context=Exception, renderer='json', accept='application/octet-stream')
 @view_config(context=Exception, renderer='json', accept='application/json')
 def internal_server_error(exc, request):
     log.error(str(exc), exc_info=sys.exc_info())

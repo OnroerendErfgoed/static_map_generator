@@ -61,7 +61,8 @@ class WmsRenderer(Renderer):
             "version": "1.1.0",
             "request": "GetMap",
             "styles": '',
-            "srs": "EPSG:" + str(kwargs['epsg']),
+            #"srs": "EPSG:" + str(kwargs['epsg']),
+            "srs": "EPSG:31370",
             "bbox": str(kwargs['bbox'][0]) + "," + str(kwargs['bbox'][1]) + "," + str(kwargs['bbox'][2]) + "," + str(kwargs['bbox'][3]),
             "width": kwargs['width'],
             "height": kwargs['height']

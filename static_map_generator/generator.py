@@ -9,6 +9,7 @@ from static_map_generator.utils import merge_dicts
 
 log = logging.getLogger(__name__)
 
+
 class Generator():
 
     @staticmethod
