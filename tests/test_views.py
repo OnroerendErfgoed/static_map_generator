@@ -1,119 +1,73 @@
 import unittest
+import os
+import json
 
-from pyramid import testing
+from paste.deploy.loadwsgi import appconfig
+from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.compat import text_
 
 try:
-    from unittest.mock import Mock, patch
+    from unittest.mock import Mock, patch, MagicMock, PropertyMock
 except:
-    from mock import Mock, patch
+    from mock import Mock, patch, MagicMock, PropertyMock
+
+from static_map_generator.views.views import RestView
+from static_map_generator.validators import ValidationFailure
+from static_map_generator.views.exceptions import internal_server_error
 
 
-def _registerRoutes(config):
-    config.add_route('maps', '/maps')
-    config.add_route('home', '/')
-    settings = {
-    }
-    config.registry.settings = settings
+settings = appconfig('config:' + os.path.join(os.path.dirname(__file__), 'test.ini'))
+with open(os.path.join(os.path.dirname(__file__), 'fixtures/grb_and_geojson.json'), 'rb') as f:
+    grb_and_geojson = json.loads(text_(f.read()))
 
 
 class ViewTests(unittest.TestCase):
     def setUp(self):
-        self.request = testing.DummyRequest()
-        self.config = testing.setUp(request=self.request)
-        _registerRoutes(self.config)
+        self.request = DummyRequest()
+        self.request.registry.settings = settings
 
     def tearDown(self):
-        testing.tearDown()
+        pass
 
+    def test_get_params(self):
+        self.assertRaises(HTTPBadRequest, RestView(self.request)._get_params)
 
-class RestViewTests(ViewTests):
-    def _get_params(self):
-        return {
-    "params": {
-        "filename": "file_path",
-        "epsg": 31370,
-        "filetype": "png",
-        "width": 500,
-        "height": 500,
-        "bbox": [
-            145000,
-            195000,
-            165000,
-            215000
-        ]
-    },
-    "layers": [
-        {
+        self.request.json_body = {}
+        params = RestView(self.request)._get_params()
+        self.assertDictEqual({}, params)
 
-                "type": "text",
-                "text": "This is a test",
-                "color": "#FF3366",
-                "borderwidth": 1,
-                "font_size": 24,
-                "text_color": "#FF3366"
+        self.request = MagicMock()
+        p = PropertyMock(side_effect=ValueError)
+        type(self.request).json_body = p
+        self.assertRaises(HTTPBadRequest, RestView(self.request)._get_params)
 
-        },
-        {
-
-                "type": "logo",
-                'url': 'https://www.onroerenderfgoed.be/assets/img/logo-og.png',
-                "opacity": 0.5
-
-        },
-        {
-
-                "type": "wkt",
-                "wkt": "POLYGON ((155000 215000, 160000 210000, 160000 215000, 155000 215000))",
-                "color": "steelblue",
-                "opacity": 0.5
-
-        },
-        {
-
-                "type": "wms",
-                "url": "https://geo.onroerenderfgoed.be/geoserver/wms?",
-                "layers": "vioe_geoportaal:landschapsbeheersplannen",
-                "featureid": "landschapsbeheersplannen.3816"
-
-        },
-        {
-
-                "type": "wms",
-                "url": "https://geo.onroerenderfgoed.be/geoserver/wms?",
-                "layers": "vioe_geoportaal:onbestaande_laag"
-
-        },
-        {
-
-                "type": "wms",
-                "url": "http://geo.api.agiv.be/geodiensten/raadpleegdiensten/GRB-basiskaart/wmsgr?",
-                "layers": "GRB_BSK"
-
-        }
-    ]
-}
-
-    def _get_rest_view(self, request):
-        from static_map_generator.views.views import RestView
-
-        return RestView(request)
+    def test_validate_config(self):
+        self.request.json_body = {}
+        rest_view = RestView(self.request)
+        params = rest_view._get_params()
+        self.assertRaises(ValidationFailure, rest_view.validate_config, params)
 
     def test_home(self):
-        from static_map_generator.views.views import RestView
-
-        homeview = RestView(self.request)
-        home = homeview.home()
+        rest_view = RestView(self.request)
+        home = rest_view.home()
         self.assertEqual('200 OK', home.status)
 
-    def test_nojson(self):
-        from static_map_generator.views.views import RestView
+    def test_maps_by_post(self):
+        self.request.json_body = grb_and_geojson
+        rest_view = RestView(self.request)
+        res = rest_view.maps_by_post_stream()
+        self.assertEqual('200 OK', res.status)
+        self.assertIsNotNone(res.body)
 
-        rv = RestView(self.request)
-        self.assertRaises(HTTPBadRequest, rv.maps_by_post)
+    def test_maps_by_post_base64(self):
+        self.request.json_body = grb_and_geojson
+        rest_view = RestView(self.request)
+        res = rest_view.maps_by_post_base64()
+        self.assertIsNotNone(res['image'])
 
-    def test_notfound(self):
-        from static_map_generator.views.exceptions import not_found
-        rv = not_found(self.request)
-        self.assertIsInstance(rv,dict)
-        self.assertEquals(rv['message'], 'De door u gevraagde resource kon niet gevonden worden.')
+    def test_internal_error(self):
+        res = internal_server_error(Exception(), self.request)
+        expected_msg = 'Er ging iets fout in de server. Onze excuses. Stel je fouten vast of heb je een vraag? ' \
+                       'Mail dan naar ict@onroerenderfgoed.be'
+        self.assertDictEqual({'detail': '', 'message': expected_msg}, res)

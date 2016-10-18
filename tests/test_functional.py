@@ -1,4 +1,6 @@
-import os, unittest, json
+import unittest
+import os
+import json
 
 import pytest
 
@@ -26,135 +28,141 @@ class FunctionalTests(unittest.TestCase):
         testing.tearDown()
 
 
-class RestFunctionalTests(FunctionalTests):
+# class RestFunctionalTests(FunctionalTests):
 
-    def _get_params_non_existent(self):
-        return {
-            "params": {
-                "epsg": 31370,
-                "filetype": "png",
-                "width": 500,
-                "height": 500,
-                "bbox": [
-                    145000,
-                    195000,
-                    165000,
-                    215000
-                ]
-            },
-            "layers": [{
-                "type": "wms",
-                "url": "https://geo.onroerenderfgoed.be/geoserver/wms?",
-                "layers": "vioe_geoportaal:onbestaande_laag"
-
-            }]
-        }
-
-    def _get_params1(self):
-        return {
-            "params": {
-                "epsg": 31370,
-                "filetype": "png",
-                "width": 500,
-                "height": 500,
-                "bbox": [
-                    145000,
-                    195000,
-                    165000,
-                    215000
-                ]
-            },
-            "layers": [ {
-                "type": "text",
-                "text": "This is a test",
-                "color": "#FF3366",
-                "borderwidth": 1,
-                "font_size": 24,
-                "text_color": "#FF3366"
-            }]
-        }
-
-    def _get_params(self):
-        return {
-            "params": {
-                "epsg": 31370,
-                "filetype": "png",
-                "width": 500,
-                "height": 500,
-                "bbox": [
-                    145000,
-                    195000,
-                    165000,
-                    215000
-                ]
-            },
-            "layers": [
-                {
-                    "type": "text",
-                    "text": "Copyright OE",
-                    "color": "#FF3366",
-                    "font_size": 12,
-                    "text_color": "#222222",
-                    "gravity": "south_east"
-                },
-                {
-
-                    "type": "logo",
-                    "url": "https://www.onroerenderfgoed.be/assets/img/logo-og.png",
-                    "opacity": 0.5
-
-                },
-                {
-
-                    "type": "wkt",
-                    "wkt": "POLYGON ((155000 215000, 160000 210000, 160000 215000, 155000 215000))",
-                    "color": "steelblue",
-                    "opacity": 0.5
-
-                },
-                {
-
-                    "type": "wms",
-                    "url": "https://geo.onroerenderfgoed.be/geoserver/wms?",
-                    "layers": "vioe_geoportaal:landschapsbeheersplannen"
-
-                },
-                {
-
-                    "type": "wms",
-                    "url": "http://geo.api.agiv.be/geodiensten/raadpleegdiensten/GRB-basiskaart/wmsgr?",
-                    "layers": "GRB_BSK"
-                }
-
-            ]
-        }
-
-    def test_map(self):
-        self.testapp.get('/mock_user')
-        res = self.testapp.post('/maps', json.dumps(self._get_params1()),
-                                headers={'Accept': 'application/json'})
-        self.assertIn('image/png', res.headers['Content-Type'])
-        self.assertEqual('200 OK', res.status)
-
-    def test_notfound(self):
-        try:
-            self.testapp.get('/mock_user')
-            res = self.testapp.post('/notfound', json.dumps(self._get_params()), headers={'Accept': 'application/json'})
-        except Exception as e:
-            self.assertIsInstance(e, AppError)
-        pass
-
-    def test_renderror(self):
-        self.testapp.get('/mock_user')
-        data = json.dumps(self._get_params_non_existent())
-        self.assertRaises(Exception, self.testapp.post, '/maps', data, headers={'Accept': 'application/json'})
-
-    def test_validationerror(self):
-        self.testapp.get('/mock_user')
-        self.assertRaises(Exception, self.testapp.post, '/maps', "{}", headers={'Accept': 'application/json'})
-
+    # def _get_params_non_existent(self):
+    #     return {
+    #         "params": {
+    #             "epsg": 31370,
+    #             "filetype": "png",
+    #             "width": 500,
+    #             "height": 500,
+    #             "bbox": [
+    #                 145000,
+    #                 195000,
+    #                 165000,
+    #                 215000
+    #             ]
+    #         },
+    #         "layers": [{
+    #             "type": "wms",
+    #             "url": "https://geo.onroerenderfgoed.be/geoserver/wms?",
+    #             "layers": "vioe_geoportaal:onbestaande_laag"
+    #
+    #         }]
+    #     }
+    #
+    # def _get_params1(self):
+    #     return {
+    #         "params": {
+    #             "epsg": 31370,
+    #             "filetype": "png",
+    #             "width": 500,
+    #             "height": 500,
+    #             "bbox": [
+    #                 145000,
+    #                 195000,
+    #                 165000,
+    #                 215000
+    #             ]
+    #         },
+    #         "layers": [ {
+    #             "type": "text",
+    #             "text": "This is a test",
+    #             "color": "#FF3366",
+    #             "borderwidth": 1,
+    #             "font_size": 24,
+    #             "text_color": "#FF3366"
+    #         }]
+    #     }
+    #
+    # def _get_params(self):
+    #     return {
+    #         "params": {
+    #             "epsg": 31370,
+    #             "filetype": "png",
+    #             "width": 500,
+    #             "height": 500,
+    #             "bbox": [
+    #                 145000,
+    #                 195000,
+    #                 165000,
+    #                 215000
+    #             ]
+    #         },
+    #         "layers": [
+    #             {
+    #                 "type": "text",
+    #                 "text": "Copyright OE",
+    #                 "color": "#FF3366",
+    #                 "font_size": 12,
+    #                 "text_color": "#222222",
+    #                 "gravity": "south_east"
+    #             },
+    #             {
+    #
+    #                 "type": "logo",
+    #                 "url": "https://www.onroerenderfgoed.be/assets/img/logo-og.png",
+    #                 "opacity": 0.5
+    #
+    #             },
+    #             {
+    #
+    #                 "type": "wkt",
+    #                 "wkt": "POLYGON ((155000 215000, 160000 210000, 160000 215000, 155000 215000))",
+    #                 "color": "steelblue",
+    #                 "opacity": 0.5
+    #
+    #             },
+    #             {
+    #
+    #                 "type": "wms",
+    #                 "url": "https://geo.onroerenderfgoed.be/geoserver/wms?",
+    #                 "layers": "vioe_geoportaal:landschapsbeheersplannen"
+    #
+    #             },
+    #             {
+    #
+    #                 "type": "wms",
+    #                 "url": "http://geo.api.agiv.be/geodiensten/raadpleegdiensten/GRB-basiskaart/wmsgr?",
+    #                 "layers": "GRB_BSK"
+    #             }
+    #
+    #         ]
+    #     }
+    # def test_map(self):
+    #     self.testapp.get('/mock_user')
+    #     res = self.testapp.post('/maps', json.dumps(self._get_params1()),
+    #                             headers={'Accept': 'application/json'})
+    #     self.assertIn('image/png', res.headers['Content-Type'])
+    #     self.assertEqual('200 OK', res.status)
+    #
     def test_not_authorized(self):
         res = self.testapp.post('/maps', "{}",
                                 headers={'Accept': 'application/json', 'Content-Type': 'application/json'},
                                 expect_errors=True)
         self.assertEqual('401 Unauthorized', res.status)
+
+    def test_not_found(self):
+        self.testapp.get('/mock_user')
+        res = self.testapp.post('/notfound', json.dumps({}), headers={'Accept': 'application/json'}, expect_errors=True)
+        self.assertEqual('404 Not Found', res.status)
+        res = self.testapp.get('/maps', json.dumps({}), headers={'Accept': 'application/json'}, expect_errors=True)
+        self.assertEqual('404 Not Found', res.status)
+
+    def test_failed_validation(self):
+        self.testapp.get('/mock_user')
+        res = self.testapp.post('/maps', json.dumps({}), headers={'Accept': 'application/json'}, expect_errors=True)
+        self.assertEqual(400, res.status_int)
+
+    #
+    # def test_renderror(self):
+    #     self.testapp.get('/mock_user')
+    #     data = json.dumps(self._get_params_non_existent())
+    #     self.assertRaises(Exception, self.testapp.post, '/maps', data, headers={'Accept': 'application/json'})
+    #
+    # def test_validationerror(self):
+    #     self.testapp.get('/mock_user')
+    #     self.assertRaises(Exception, self.testapp.post, '/maps', "{}", headers={'Accept': 'application/json'})
+    #
+

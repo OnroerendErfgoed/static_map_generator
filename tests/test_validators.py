@@ -1,6 +1,17 @@
 import unittest
-from static_map_generator.validators import uri_validator, wkt_validator, geojson_validator, string_validator, \
-    number_validator, scale_validator, gravity_validator, required_validator, optional_validator, ConfigSchemaNode
+from static_map_generator.validators import (
+    uri_validator,
+    wkt_validator,
+    geojson_validator,
+    string_validator,
+    number_validator,
+    scale_validator,
+    gravity_validator,
+    required_validator,
+    optional_validator,
+    ConfigSchemaNode,
+    ValidationFailure
+)
 from colander import Invalid
 
 config = {
@@ -84,6 +95,11 @@ test_node = Node('test_node')
 class ValidateParamsTests(unittest.TestCase):
     def setUp(self):
         pass
+
+    def test_validation_failure(self):
+        a = ValidationFailure('msg', 'errors')
+        self.assertEqual('msg', a.msg)
+        self.assertEqual('errors', a.errors)
 
     def test_config(self):
         config_schema = ConfigSchemaNode()
