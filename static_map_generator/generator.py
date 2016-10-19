@@ -4,7 +4,7 @@ import tempdir
 import mapnik
 import base64
 from static_map_generator.renderer import Renderer
-from static_map_generator.utils import merge_dicts
+from static_map_generator.utils import merge_dicts, rescale_bbox
 
 
 log = logging.getLogger(__name__)
@@ -27,9 +27,7 @@ class Generator():
 
         s = mapnik.Style()
         r = mapnik.Rule()
-        # polygon_symbolizer = mapnik.PolygonSymbolizer(mapnik.Color(str(kwargs['color'])))
         polygon_symbolizer = mapnik.PolygonSymbolizer(mapnik.Color('steelblue'))
-        # polygon_symbolizer.fill_opacity = kwargs['opacity']
         polygon_symbolizer.fill_opacity = 0.5
         r.symbols.append(polygon_symbolizer)
         line_symbolizer = mapnik.LineSymbolizer(mapnik.Color('rgb(50%,50%,50%)'), 1.0)
@@ -39,25 +37,19 @@ class Generator():
         s.rules.append(r)
         mapnik_map.append_style('default', s)
 
+        background_layers = [layer for layer in config['layers'] if layer['type'] == 'wms']
+        background = background_layers[0] if len(background_layers) > 0 else None
+        layers = [layer for layer in config['layers'] if layer['type'] != 'wms']
+
         # render layers
-        for idx, layer in enumerate(config['layers']):
+        for idx, layer in enumerate(layers):
             renderer = Renderer.factory(layer['type'])
             layer['idx'] = idx
-            # layer['filetype'] = 'png'
-            # layer['filename'] = os.path.join(temp.name, str(idx) + '.' + layer['filetype'])
             kwargs = merge_dicts(config['params'], layer)
             try:
                 rendered_layer = renderer.render(**kwargs)
-                if renderer.type() == 'wms':
-                    # mapnik_map.background_image = rendered_layer
-                    background = os.path.join(str(config['params']['tempdir']), "background.png")
-                    with open(background, 'wb') as im:
-                            im.write(rendered_layer)
-                    mapnik_map.background_image = background
-
-                else:
-                    rendered_layer.styles.append('default')
-                    mapnik_map.layers.append(rendered_layer)
+                rendered_layer.styles.append('default')
+                mapnik_map.layers.append(rendered_layer)
             except NotImplementedError as e:
                 log.warning("Layertype is not yet implemented: " + e.message)
                 pass
@@ -66,10 +58,37 @@ class Generator():
                 log.error('Following layer could not be rendered: ' + str(idx) + ' -->message: ' + e.message)
                 raise
 
-        extent = mapnik.Box2d(config['params']['bbox'][0], config['params']['bbox'][1],
-                              config['params']['bbox'][2], config['params']['bbox'][3])
-        mapnik_map.zoom_to_box(extent)
-        # mapnik.render_to_file(m, str(kwargs['filename']), str(kwargs['filetype']))
+        # bbox is the given bbox or the bbox of the layers with a buffer value
+        if not config['params']['bbox']:
+            mapnik_map.buffer_size = 100
+            mapnik_map.zoom_all()
+            extend = mapnik_map.buffered_envelope()
+            bbox_layers = [extend.minx, extend.miny, extend.maxx, extend.maxy]
+        else:
+            bbox_layers = config['params']['bbox']
+            extend = mapnik.Box2d(bbox_layers[0], bbox_layers[1], bbox_layers[2], bbox_layers[3])
+        mapnik_map.zoom_to_box(extend)
+
+        # render background
+        if background:
+            # printing map to image works differently for wms in comparison to Mapnik rendering
+            # rescaling of the bbox is necessary to avoid deformations of the background image
+
+            bbox = rescale_bbox(config['params']['height'], config['params']['width'], bbox_layers)
+            config['params']['bbox'] = bbox
+            mapnik_map.zoom_to_box(mapnik.Box2d(bbox[0], bbox[1], bbox[2], bbox[3]))
+            # rendering the background image
+            renderer = Renderer.factory('wms')
+            kwargs = merge_dicts(config['params'], background)
+            try:
+                rendered_layer = renderer.render(**kwargs)
+                background = os.path.join(str(config['params']['tempdir']), "background.png")
+                with open(background, 'wb') as im:
+                    im.write(rendered_layer)
+                mapnik_map.background_image = background
+            except Exception as e:
+                log.error('Background wms could not be rendered: -->message: ' + e.message)
+                raise
 
         im = mapnik.Image(mapnik_map.width, mapnik_map.height)
         mapnik.render(mapnik_map, im)
@@ -95,5 +114,3 @@ class Generator():
 
         with open(image_file, "rb") as image_file:
             return base64.b64encode(image_file.read())
-        # with open(image_file, 'rb') as f:
-        #     return f.read()
