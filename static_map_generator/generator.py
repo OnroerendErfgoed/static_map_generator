@@ -60,8 +60,10 @@ class Generator():
 
         # bbox is the given bbox or the bbox of the layers with a buffer value
         if not config['params']['bbox']:
-            mapnik_map.buffer_size = 100
             mapnik_map.zoom_all()
+            min_extend = mapnik_map.envelope()
+            mapnik_map.buffer_size = int(
+                (max(min_extend.maxx - min_extend.minx, min_extend.maxy - min_extend.miny)) * 0.4)
             extend = mapnik_map.buffered_envelope()
             bbox_layers = [extend.minx, extend.miny, extend.maxx, extend.maxy]
         else:

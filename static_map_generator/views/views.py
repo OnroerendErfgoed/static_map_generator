@@ -45,7 +45,7 @@ class RestView(object):
             "geografische databronnen (wms, wkt, geojson,...)",
             content_type='text/plain', status_int=200)
 
-    @view_config(route_name='maps', request_method='POST', accept='application/octet-stream', permission='admin')
+    @view_config(route_name='maps', request_method='POST', accept='application/octet-stream')
     def maps_by_post_stream(self):
         params = self._get_params()
         config = self.validate_config(params)
