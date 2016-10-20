@@ -37,9 +37,7 @@ class Generator():
         s.rules.append(r)
         mapnik_map.append_style('default', s)
 
-        background_layers = [layer for layer in config['layers'] if layer['type'] == 'wms']
-        background = background_layers[0] if len(background_layers) > 0 else None
-        layers = [layer for layer in config['layers'] if layer['type'] != 'wms']
+        layers = [layer for layer in config['layers'] if layer['type'] not in ['wms', 'text']]
 
         # render layers
         for idx, layer in enumerate(layers):
@@ -72,6 +70,8 @@ class Generator():
         mapnik_map.zoom_to_box(extend)
 
         # render background
+        background_layers = [layer for layer in config['layers'] if layer['type'] == 'wms']
+        background = background_layers[0] if len(background_layers) > 0 else None
         if background:
             # printing map to image works differently for wms in comparison to Mapnik rendering
             # rescaling of the bbox is necessary to avoid deformations of the background image
@@ -97,6 +97,18 @@ class Generator():
         filename = os.path.join(str(config['params']['tempdir']), "result")
         im.save(filename, 'png')
 
+        # add text
+        text_layers = [layer for layer in config['layers'] if layer['type'] == 'text']
+        text = text_layers[0] if len(text_layers) > 0 else None
+        if text:
+            renderer = Renderer.factory('text')
+            config['params']['filename'] = filename
+            kwargs = merge_dicts(config['params'], text)
+            try:
+                renderer.render(**kwargs)
+            except Exception as e:
+                log.error('Text could not be rendered: -->message: ' + e.message)
+                raise
         return filename
 
     @staticmethod

@@ -10,10 +10,10 @@ from pyramid.renderers import JSON
 from requests.packages.urllib3.connection import ConnectionError
 import requests
 import mapnik
-# from wand.color import Color
+from wand.color import Color
 # from wand.display import display
-# from wand.image import Image
-# from wand.image import Font
+from wand.image import Image
+from wand.image import Font
 from static_map_generator.utils import merge_dicts
 # from static_map_generator.utils import convert_wkt_to_geojson, position_figure, define_scale_number
 
@@ -31,8 +31,8 @@ class Renderer(object):
         #     return WktRenderer()
         elif layer_type == "geojson":
             return GeojsonRenderer()
-        # elif layer_type == "text":
-        #     return TextRenderer()
+        elif layer_type == "text":
+            return TextRenderer()
         # elif layer_type == "logo":
         #     return LogoRenderer()
         # elif layer_type == "scale":
@@ -107,20 +107,19 @@ class GeojsonRenderer(Renderer):
 #         return "wkt"
 #
 #
-# class TextRenderer(Renderer):
-#     def render(self, **kwargs):
-#
-#         with Image(width=kwargs['width'],
-#                    height=kwargs['height']) as image:
-#             font = Font(path='/Library/Fonts/Verdana.ttf', size=kwargs['font_size'], color=Color(kwargs['text_color']))
-#             image.caption(kwargs['text'], left=0, top=0,
-#                           font=font, gravity=kwargs['gravity'])
-#             image.save(filename=kwargs['filename'])
-#
-#     def type(self):
-#         return "text"
-#
-#
+class TextRenderer(Renderer):
+    def render(self, **kwargs):
+
+        with Image(filename=kwargs['filename']) as image:
+            font = Font(path='/Library/Fonts/Verdana.ttf', size=kwargs['font_size'], color=Color('black'))
+            image.caption(kwargs['text'], left=0, top=0,
+                          font=font, gravity=kwargs['gravity'])
+            image.save(filename=kwargs['filename'])
+
+    def type(self):
+        return "text"
+
+
 # class LogoRenderer(Renderer):
 #     def render(self, **kwargs):
 #
