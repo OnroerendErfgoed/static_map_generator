@@ -108,7 +108,7 @@ class GeojsonRenderer(Renderer):
 class TextRenderer(Renderer):
     def render(self, **kwargs):
 
-        with Image(filename=kwargs['filename']) as image:
+        with Image(filename=kwargs['filename'], resolution=300) as image:
             with Drawing() as draw:
                 draw.font = '/Library/Fonts/Verdana.ttf'
                 draw.font_size = kwargs['font_size']

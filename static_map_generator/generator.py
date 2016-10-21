@@ -95,6 +95,9 @@ class Generator():
         filename = os.path.join(str(config['params']['tempdir']), "result")
         im.save(filename, 'png')
 
+        # from static_map_generator.utils import convert_png_to_svg
+        # filename_svg = convert_png_to_svg(config['params']['width'], config['params']['height'], filename)
+
         # add text
         text_layers = [layer for layer in config['layers'] if layer['type'] == 'text']
         text = text_layers[0] if len(text_layers) > 0 else None
@@ -114,7 +117,7 @@ class Generator():
         scale = {
             "text": "Schaal 1:{}".format(int(mapnik_map.scale_denominator())),
             "gravity": "south_west",
-            "font_size": 14
+            "font_size": 5
         }
         kwargs = merge_dicts(config['params'], scale)
         try:
