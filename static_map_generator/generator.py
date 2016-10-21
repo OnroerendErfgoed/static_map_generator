@@ -38,7 +38,6 @@ class Generator():
         mapnik_map.append_style('default', s)
 
         layers = [layer for layer in config['layers'] if layer['type'] not in ['wms', 'text']]
-
         # render layers
         for idx, layer in enumerate(layers):
             renderer = Renderer.factory(layer['type'])
@@ -61,7 +60,7 @@ class Generator():
             mapnik_map.zoom_all()
             min_extend = mapnik_map.envelope()
             mapnik_map.buffer_size = int(
-                (max(min_extend.maxx - min_extend.minx, min_extend.maxy - min_extend.miny)) * 0.4)
+                (max(min_extend.maxx - min_extend.minx, min_extend.maxy - min_extend.miny)) * 0.5)
             extend = mapnik_map.buffered_envelope()
             bbox_layers = [extend.minx, extend.miny, extend.maxx, extend.maxy]
         else:
@@ -75,7 +74,6 @@ class Generator():
         if background:
             # printing map to image works differently for wms in comparison to Mapnik rendering
             # rescaling of the bbox is necessary to avoid deformations of the background image
-
             bbox = rescale_bbox(config['params']['height'], config['params']['width'], bbox_layers)
             config['params']['bbox'] = bbox
             mapnik_map.zoom_to_box(mapnik.Box2d(bbox[0], bbox[1], bbox[2], bbox[3]))
@@ -109,6 +107,22 @@ class Generator():
             except Exception as e:
                 log.error('Text could not be rendered: -->message: ' + e.message)
                 raise
+
+        # add scale
+        renderer = Renderer.factory('text')
+        config['params']['filename'] = filename
+        scale = {
+            "text": "Schaal 1:{}".format(int(mapnik_map.scale_denominator())),
+            "gravity": "south_west",
+            "font_size": 14
+        }
+        kwargs = merge_dicts(config['params'], scale)
+        try:
+            renderer.render(**kwargs)
+        except Exception as e:
+            log.error('Scale could not be rendered: -->message: ' + e.message)
+            raise
+
         return filename
 
     @staticmethod
