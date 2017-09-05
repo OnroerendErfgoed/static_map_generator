@@ -27,10 +27,12 @@ class Generator():
 
         s = mapnik.Style()
         r = mapnik.Rule()
-        polygon_symbolizer = mapnik.PolygonSymbolizer(mapnik.Color('steelblue'))
+        polygon_symbolizer = mapnik.PolygonSymbolizer()
+        polygon_symbolizer.fill = mapnik.Color('steelblue')
         polygon_symbolizer.fill_opacity = 0.5
         r.symbols.append(polygon_symbolizer)
-        line_symbolizer = mapnik.LineSymbolizer(mapnik.Color('rgb(50%,50%,50%)'), 1.0)
+        line_symbolizer = mapnik.LineSymbolizer()
+        line_symbolizer.fill = mapnik.Color('rgb(50%,50%,50%)')
         r.symbols.append(line_symbolizer)
         point_symbolizer = mapnik.PointSymbolizer()
         r.symbols.append(point_symbolizer)
@@ -117,7 +119,7 @@ class Generator():
         scale = {
             "text": "Schaal 1:{}".format(int(mapnik_map.scale_denominator())),
             "gravity": "south_west",
-            "font_size": 5
+            "font_size": 3
         }
         kwargs = merge_dicts(config['params'], scale)
         try:
