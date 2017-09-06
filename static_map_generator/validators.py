@@ -4,7 +4,7 @@ import rfc3987
 from shapely import wkt, geometry
 import json
 import geojson
-
+from pyramid.compat import text_type, long
 
 class ValidationFailure(Exception):
     """
@@ -68,7 +68,7 @@ def string_validator(node, value):
     :param node: The schema node to which this exception relates.
     :param value: Value to validate.
     """
-    if not isinstance(value, (str, unicode)) or len(value) == 0:
+    if not isinstance(value, text_type) or len(value) == 0:
         raise colander.Invalid(
             node,
             "{} is not a valid sting".format(value)
