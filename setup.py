@@ -16,7 +16,6 @@ requires = [
       'Wand',
       'argparse',
       'requests',
-      'wsgiref',
       'geojson',
       'colander',
       'rfc3987'
