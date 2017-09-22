@@ -41,8 +41,7 @@ class RestView(object):
     @view_config(route_name='home', request_method='GET', permission='home')
     def home(self):
         return Response(
-            "Static_map_generator: service voor het genereren van een statische kaart op basis van verschillende "
-            "geografische databronnen (wms, wkt, geojson,...)",
+            "Static_map_generator: service for generating a static map based on different geographic data sources.",
             content_type='text/plain', status_int=200)
 
     @view_config(route_name='maps', request_method='POST', accept='application/octet-stream', permission='admin')
@@ -54,7 +53,8 @@ class RestView(object):
         res.body = Generator.generate_stream(config)
         return res
 
-    @view_config(route_name='maps', request_method='POST', accept='application/json', renderer='itemjson', permission='admin')
+    @view_config(route_name='maps', request_method='POST', accept='application/json', renderer='itemjson',
+                 permission='admin')
     def maps_by_post_base64(self):
         params = self._get_params()
         config = self.validate_config(params)

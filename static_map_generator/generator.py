@@ -10,7 +10,7 @@ from static_map_generator.utils import merge_dicts, rescale_bbox
 log = logging.getLogger(__name__)
 
 
-class Generator():
+class Generator:
 
     @staticmethod
     def generate(config):
@@ -21,8 +21,7 @@ class Generator():
         """
 
         # generate map
-        mapnik_map = mapnik.Map(config['params']['width'], config['params']['height'],
-                                '+init=epsg:' + str(config['params']['epsg']))
+        mapnik_map = mapnik.Map(config['params']['width'], config['params']['height'], '+init=epsg:31370')
         mapnik_map.background = mapnik.Color('white')
 
         s = mapnik.Style()
@@ -39,7 +38,7 @@ class Generator():
         s.rules.append(r)
         mapnik_map.append_style('default', s)
 
-        layers = [layer for layer in config['layers'] if layer['type'] not in ['wms', 'text']]
+        layers = [layer for layer in config['layers'] if layer['type'] in ['geojson']]
         # render layers
         for idx, layer in enumerate(layers):
             renderer = Renderer.factory(layer['type'])
@@ -49,12 +48,9 @@ class Generator():
                 rendered_layer = renderer.render(**kwargs)
                 rendered_layer.styles.append('default')
                 mapnik_map.layers.append(rendered_layer)
-            except NotImplementedError as e:
-                log.warning("Layertype is not yet implemented: " + e.message)
-                pass
-
             except Exception as e:
-                log.error('Following layer could not be rendered: ' + str(idx) + ' -->message: ' + e.message)
+                log.error('Following layer could not be rendered: ' + str(idx))
+                log.error(e, exc_info=True)
                 raise
 
         # bbox is the given bbox or the bbox of the layers with a buffer value
@@ -62,7 +58,7 @@ class Generator():
             mapnik_map.zoom_all()
             min_extend = mapnik_map.envelope()
             mapnik_map.buffer_size = int(
-                (max(min_extend.maxx - min_extend.minx, min_extend.maxy - min_extend.miny)) * 0.5)
+                (min(min_extend.maxx - min_extend.minx, min_extend.maxy - min_extend.miny)) * 0.5)
             extend = mapnik_map.buffered_envelope()
             bbox_layers = [extend.minx, extend.miny, extend.maxx, extend.maxy]
         else:
@@ -89,16 +85,14 @@ class Generator():
                     im.write(rendered_layer)
                 mapnik_map.background_image = background
             except Exception as e:
-                log.error('Background wms could not be rendered: -->message: ' + e.message)
+                log.error('Background wms could not be rendered')
+                log.error(e, exc_info=True)
                 raise
 
         im = mapnik.Image(mapnik_map.width, mapnik_map.height)
         mapnik.render(mapnik_map, im)
         filename = os.path.join(str(config['params']['tempdir']), "result")
         im.save(filename, 'png')
-
-        # from static_map_generator.utils import convert_png_to_svg
-        # filename_svg = convert_png_to_svg(config['params']['width'], config['params']['height'], filename)
 
         # add text
         text_layers = [layer for layer in config['layers'] if layer['type'] == 'text']
@@ -110,14 +104,15 @@ class Generator():
             try:
                 renderer.render(**kwargs)
             except Exception as e:
-                log.error('Text could not be rendered: -->message: ' + e.message)
+                log.error('Text could not be rendered')
+                log.error(e, exc_info=True)
                 raise
 
         # add scale
-        renderer = Renderer.factory('text')
+        renderer = Renderer.factory('scale')
         config['params']['filename'] = filename
         scale = {
-            "text": "Schaal 1:{}".format(int(mapnik_map.scale_denominator())),
+            "map_scale": mapnik_map.scale(),
             "gravity": "south_west",
             "font_size": 3
         }
@@ -125,7 +120,8 @@ class Generator():
         try:
             renderer.render(**kwargs)
         except Exception as e:
-            log.error('Scale could not be rendered: -->message: ' + e.message)
+            log.error('Scale could not be rendered')
+            log.error(e, exc_info=True)
             raise
 
         return filename

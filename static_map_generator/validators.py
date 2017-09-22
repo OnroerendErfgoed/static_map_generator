@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import colander
 import rfc3987
-from shapely import wkt, geometry
+from shapely import geometry
 import json
 import geojson
-from pyramid.compat import text_type, long
+from pyramid.compat import text_, long
+
 
 class ValidationFailure(Exception):
     """
@@ -25,22 +26,6 @@ def uri_validator(node, uri):
     """
     if not rfc3987.match(uri, rule='URI'):
         raise colander.Invalid(node, '{0} is geen geldige URI.'.format(uri))
-
-
-def wkt_validator(node, wkt_input):
-    """
-    Shapely WKT validator.
-
-    :param node: The schema node to which this exception relates.
-    :param wkt_input: WKT to validate.
-    """
-    try:
-        wkt.loads(wkt_input)
-    except Exception:
-        raise colander.Invalid(
-            node,
-            "Could not parse wkt {}".format(wkt_input)
-        )
 
 
 def geojson_validator(node, geojson_input):
@@ -68,10 +53,12 @@ def string_validator(node, value):
     :param node: The schema node to which this exception relates.
     :param value: Value to validate.
     """
-    if not isinstance(value, text_type) or len(value) == 0:
+    try:
+        value = text_(value)
+    except:
         raise colander.Invalid(
             node,
-            "{} is not a valid sting".format(value)
+            u"{} is not a valid string".format(value)
         )
 
 
@@ -87,20 +74,6 @@ def number_validator(node, value):
             node,
             "{} is not a valid number".format(value)
         )
-    
-
-def scale_validator(node, value):
-    """
-    Scale validator.
-
-    :param node: The schema node to which this exception relates.
-    :param value: Value to validate.
-    """
-    if not isinstance(value, (float, long)) or value > 1 or 0 > value:
-        raise colander.Invalid(
-            node,
-            "{} is not a valid scale number (1 > value > 0)".format(value)
-        )
 
 
 def gravity_validator(node, value):
@@ -113,7 +86,8 @@ def gravity_validator(node, value):
     if value not in ['center', 'north_west', 'north_east', 'south_west', 'south_east']:
         raise colander.Invalid(
             node,
-            "{} is not one of the following gravities: 'center', 'north_west', 'north_east', 'south_west', 'south_east'".format(value)
+            "{} is not one of the following gravities: 'center', 'north_west', 'north_east', 'south_west', "
+            "'south_east'".format(value)
         )
 
 
@@ -123,7 +97,7 @@ def required_validator(param, type, node, cstruct, validator=None):
     Validates the param with validator (if provided).
 
     :param param: Required param.
-    :param type: The layer type (wms', 'wkt', 'geojson', 'text', 'logo', 'scale' or 'legend').
+    :param type: The layer type (wms', 'geojson', 'text').
     :param node: The schema node to which this exception relates.
     :param cstruct: The json object.
     :param validator: The validator function.
@@ -160,40 +134,20 @@ class LayerSchemaNode(colander.MappingSchema):
 
     type = colander.SchemaNode(
             colander.String(),
-            validator=colander.OneOf(['wms', 'wkt', 'geojson', 'text', 'logo', 'scale', 'legend'])
+            validator=colander.OneOf(['wms', 'geojson', 'text'])
     )
 
     def validator(self, node, cstruct):
         if cstruct['type'] == 'wms':
             required_validator('url', 'wms', node, cstruct, uri_validator)
             required_validator('layers', 'wms', node, cstruct, string_validator)
-        elif cstruct['type'] == 'wkt':
-            required_validator('wkt', 'wkt', node, cstruct, wkt_validator)
-            optional_validator('color', 'steelblue', node, cstruct, string_validator)
-            optional_validator('opacity', 0.5, node, cstruct, scale_validator)
         elif cstruct['type'] == 'geojson':
             required_validator('geojson', 'geojson', node, cstruct, geojson_validator)
             optional_validator('color', 'steelblue', node, cstruct, string_validator)
-            optional_validator('opacity', 0.5, node, cstruct, scale_validator)
         elif cstruct['type'] == 'text':
             required_validator('text', 'text', node, cstruct, string_validator)
-            optional_validator('text_color', '#000000', node, cstruct, string_validator)
             optional_validator('gravity', 'center', node, cstruct, gravity_validator)
             optional_validator('font_size', 10, node, cstruct, number_validator)
-        elif cstruct['type'] == 'logo':
-            required_validator('url', 'logo', node, cstruct, uri_validator)
-            required_validator('imagewidth', 'logo', node, cstruct, number_validator)
-            required_validator('imageheight', 'logo', node, cstruct, number_validator)
-            optional_validator('opacity', 1, node, cstruct, scale_validator)
-            optional_validator('gravity', 'south_east', node, cstruct, string_validator)
-            optional_validator('offset', '0,0', node, cstruct, string_validator)
-        # elif cstruct['type'] == 'scale':
-        #     required_validator('imagewidth', 'logo', node, cstruct, number_validator)
-        #     required_validator('imageheight', 'logo', node, cstruct, number_validator)
-        #     optional_validator('opacity', 1, node, cstruct, scale_validator)
-        #     optional_validator('gravity', 'south_west', node, cstruct, string_validator)
-        #     optional_validator('offset', '0,0', node, cstruct, string_validator)
-        #     optional_validator('font-size', 10 , node, cstruct, number_validator)
 
 
 class Layers(colander.SequenceSchema):
@@ -211,14 +165,6 @@ class ParamsSchemaNode(colander.MappingSchema):
         colander.String(),
         missing='result',
         validator=colander.Length(4, 50)
-    )
-    epsg = colander.SchemaNode(
-        colander.Integer(),
-        validator=colander.OneOf([31370])
-    )
-    filetype = colander.SchemaNode(
-        colander.String(),
-        missing='png'
     )
     bbox = Coordinates(
         validator=colander.Length(4, 4),
