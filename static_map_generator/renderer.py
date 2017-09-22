@@ -2,19 +2,14 @@
 """
 Adapters to help render map layers
 """
-import os
 from abc import ABCMeta, abstractmethod
 import json
-from pyramid.httpexceptions import HTTPNotFound
 from pyramid.renderers import JSON
-from requests.packages.urllib3.connection import ConnectionError
 import requests
 import mapnik
 from wand.color import Color
-# from wand.display import display
 from wand.image import Image
-from wand.image import Font
-from static_map_generator.utils import merge_dicts
+from static_map_generator.utils import merge_dicts, calculate_scale
 from wand.drawing import Drawing
 
 json_item_renderer = JSON()
@@ -27,16 +22,12 @@ class Renderer(object):
     def factory(layer_type):
         if layer_type == "wms":
             return WmsRenderer()
-        # elif layer_type == "wkt":
-        #     return WktRenderer()
         elif layer_type == "geojson":
             return GeojsonRenderer()
         elif layer_type == "text":
             return TextRenderer()
-        # elif layer_type == "logo":
-        #     return LogoRenderer()
-        # elif layer_type == "legend":
-        #     return LegendRenderer()
+        elif layer_type == "scale":
+            return ScaleRenderer()
         else:
             return DefaultRenderer()
 
@@ -54,26 +45,20 @@ class WmsRenderer(Renderer):
         params = {
             "layers": kwargs['layers'],
             "transparent": "TRUE",
-            "format": "image/" + kwargs['filetype'],
+            "format": "image/png",
             "service": "WMS",
             "version": "1.1.0",
             "request": "GetMap",
             "styles": '',
-            #"srs": "EPSG:" + str(kwargs['epsg']),
             "srs": "EPSG:31370",
-            "bbox": str(kwargs['bbox'][0]) + "," + str(kwargs['bbox'][1]) + "," + str(kwargs['bbox'][2]) + "," + str(kwargs['bbox'][3]),
+            "bbox": str(kwargs['bbox'][0]) + "," + str(kwargs['bbox'][1]) + "," + str(kwargs['bbox'][2]) + ","
+                    + str(kwargs['bbox'][3]),
             "width": kwargs['width'],
             "height": kwargs['height']
         }
         params = merge_dicts(kwargs, params)
-        try:
-            res = requests.get(kwargs['url'], params=params)
-        except ConnectionError as e:
-            raise ConnectionError("Request could not be executed - Request: %s - Params: %s" % (kwargs['url'], params))
-        if res.status_code == 404:
-            raise HTTPNotFound("Service not found (status_code 404) - Request: %s - Params: %s" % (kwargs['url'], params))
-        if res.content[2:5]=='xml':
-            raise ValueError("Exception occured - Request: %s - Params: %s -  Reason: %s" % (kwargs['url'], params, res.content))
+        res = requests.get(kwargs['url'], params=params)
+        res.raise_for_status()
         return res.content
 
     def type(self):
@@ -83,12 +68,11 @@ class WmsRenderer(Renderer):
 class GeojsonRenderer(Renderer):
     def render(self, **kwargs):
         # fix to create valid geojson from contour
-        geojson = { "type": "Feature", "properties": {}, "geometry": {}}
-        geojson['geometry'] = kwargs['geojson']
+        geojson = {"type": "Feature", "properties": {}, "geometry": {}, 'geometry': kwargs['geojson']}
         ds = mapnik.MemoryDatasource()
         feature = mapnik.Feature.from_geojson(json.dumps(geojson), mapnik.Context())
         ds.add_feature(feature)
-        layer = mapnik.Layer('geojson' + str(kwargs['idx']), '+init=epsg:' + str(kwargs['epsg']))
+        layer = mapnik.Layer('geojson' + str(kwargs['idx']), '+init=epsg:31370')
         layer.datasource = ds
         return layer
 
@@ -96,15 +80,6 @@ class GeojsonRenderer(Renderer):
         return "geojson"
 
 
-# class WktRenderer(Renderer):
-#     def render(self, **kwargs):
-#         kwargs['geojson'] = convert_wkt_to_geojson(kwargs['wkt'])
-#         GeojsonRenderer().render(**kwargs)
-#
-#     def type(self):
-#         return "wkt"
-#
-#
 class TextRenderer(Renderer):
     def render(self, **kwargs):
 
@@ -124,26 +99,48 @@ class TextRenderer(Renderer):
         return "text"
 
 
-# class LogoRenderer(Renderer):
-#     def render(self, **kwargs):
-#
-#         response = requests.get(kwargs['url'], stream=True)
-#         with Image(blob=response.content) as img:
-#             img.resize(width=kwargs['imagewidth'], height=kwargs['imageheight'])
-#             img.transparentize(1 - kwargs['opacity'])
-#             position_figure(kwargs['width'], kwargs['height'], img, kwargs['gravity'], kwargs['offset'],  kwargs['filename'])
-#
-#     def type(self):
-#         return "logo"
-#
-#
-# class LegendRenderer(Renderer):
-#     def render(self, **kwargs):
-#         raise NotImplementedError("This method is not yet implemented")
-#
-#     def type(self):
-#         return "legend"
-#
+class ScaleRenderer(Renderer):
+    def render(self, **kwargs):
+        scale_width, scale_label = calculate_scale(kwargs['map_scale'], kwargs['width'])
+        buffer = 5
+
+        with Image(filename=kwargs['filename'], resolution=300) as image:
+            # draw white background
+            with Drawing() as draw:
+                draw.stroke_color = Color('white')
+                draw.fill_color = Color('white')
+                points = [(0, kwargs['height'] - buffer * 4),
+                          (0, kwargs['height']),
+                          (scale_width + (buffer * 2), kwargs['height']),
+                          (scale_width + (buffer * 2), kwargs['height'] - buffer * 4),
+                          (0, kwargs['height'] - buffer * 4)
+                          ]
+                draw.polyline(points)
+                draw(image)
+            # draw scale
+            with Drawing() as draw:
+                draw.stroke_color = Color('black')
+                draw.fill_color = Color('white')
+                points = [(buffer, kwargs['height'] - buffer * 3),
+                          (buffer, kwargs['height'] - buffer),
+                          (scale_width + buffer, kwargs['height'] - buffer),
+                          (scale_width + buffer, kwargs['height'] - buffer * 3)
+                          ]
+                draw.polyline(points)
+                draw(image)
+            # draw scale label
+            with Drawing() as draw:
+                draw.font = '/Library/Fonts/Verdana.ttf'
+                draw.font_size = 3
+                draw.fill_color = Color('black')
+                draw.gravity = "south_west"
+                draw.text(int(scale_width / 2), buffer, scale_label)
+                draw(image)
+            image.save(filename=kwargs['filename'])
+
+    def type(self):
+        return "scale"
+
 
 class DefaultRenderer(Renderer):
     def render(self, **kwargs):

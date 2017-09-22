@@ -1,53 +1,3 @@
-# import json
-#
-# import os
-#
-# from shapely.geometry import shape
-# from shapely.ops import unary_union
-# from shapely.wkt import loads
-# from wand.color import Color
-# from wand.exceptions import WandException
-# from wand.image import Font
-from wand.image import Image
-# import geojson
-# import shapely.wkt
-
-
-# def combine_layers(images, filename):
-#     combo = None
-#     for index, im in enumerate(images):
-#         if not isinstance(combo, Image):
-#             combo = Image(filename=im)
-#         if index == len(images) - 1:
-#             break
-#         else:
-#             im2 = images[index + 1]
-#             im2 = Image(filename=im2)
-#             combo.composite(im2, left=0, top=0)
-#     combo.save(filename=filename)
-#     combo.close()
-
-# def combine_layers(images):
-# from PIL import Image as PILImage
-#     combo = None
-#     for index,im in enumerate(images):
-#         if not combo:
-#             combo = PILImage.open(im) if isinstance(im, str) else im
-#             combo = combo.convert(mode='RGBA')
-#         if index == len(images)-1:
-#             break
-#         else:
-#             im2 = images[index+1]
-#             im2 = PILImage.open(im2) if isinstance(im2, str) else im2
-#             im2 = im2.convert(mode='RGBA')
-#             combo = PILImage.alpha_composite(combo, im2)
-#
-#     combo.save("result.png")
-
-# def create_buffer(wkt, buffer):
-#     geom = loads(wkt)
-#     return geom.buffer(buffer)
-
 
 def merge_dicts(*dict_args):
     """
@@ -83,22 +33,19 @@ def rescale_bbox(height, width, bbox):
     else:
         return bbox
 
-#
-# def convert_filetype(filename_ori, filename_res, filetype):
-#     original = Image(filename=filename_ori)
-#     with original.convert(filetype) as converted:
-#         converted.save(filename=filename_res)
-#
-#
-# def convert_geojson_to_wkt(value):
-#     s = json.dumps(value)
-#     g1 = geojson.loads(s)
-#     g2 = shape(g1)
-#     return g2.wkt
-#
-#
-# def convert_wkt_to_geojson(value):
-#     g1 = shapely.wkt.loads(value)
-#     g2 = geojson.Feature(geometry=g1, properties={})
-#     return g2.geometry
+
+def calculate_scale(map_scale, map_width):
+    """
+    Calculates the image scale with in pixels together with the scale label
+    using map scale (meters per pixels) and map width (pixels)
+    """
+    image_width_meter = round(map_scale * float(map_width))
+    scale_num_guess = str(int(round(image_width_meter * 0.2)))
+    scale_num = int(2 * round(float(int(scale_num_guess[0])) / 2)) * 10 ** (len(scale_num_guess[1:]))
+    scale_num = scale_num if scale_num else 1 * 10 ** (len(scale_num_guess[1:]))
+    scale_width = round(scale_num / map_scale)
+    scale_label = "{} m".format(scale_num) if scale_num < 1000 else "{} km".format(scale_num/1000)
+
+    return scale_width, scale_label
+
 

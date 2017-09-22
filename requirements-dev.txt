@@ -18,7 +18,7 @@ Sphinx==1.4
 sphinxcontrib-httpdomain==1.4.0
 sphinx_rtd_theme==0.1.9
 sphinxcontrib-plantuml==0.7
-oe-sphinx-theme==0.1.0
+#oe-sphinx-theme==0.1.0
 
 # waitress
 waitress==0.8.10
