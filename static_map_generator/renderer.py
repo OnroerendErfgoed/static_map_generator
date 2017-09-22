@@ -105,6 +105,7 @@ class ScaleRenderer(Renderer):
         buffer = 5
 
         with Image(filename=kwargs['filename'], resolution=300) as image:
+            # draw white background
             with Drawing() as draw:
                 draw.stroke_color = Color('white')
                 draw.fill_color = Color('white')
@@ -116,6 +117,7 @@ class ScaleRenderer(Renderer):
                           ]
                 draw.polyline(points)
                 draw(image)
+            # draw scale
             with Drawing() as draw:
                 draw.stroke_color = Color('black')
                 draw.fill_color = Color('white')
@@ -126,6 +128,7 @@ class ScaleRenderer(Renderer):
                           ]
                 draw.polyline(points)
                 draw(image)
+            # draw scale label
             with Drawing() as draw:
                 draw.font = '/Library/Fonts/Verdana.ttf'
                 draw.font_size = 3
