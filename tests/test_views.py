@@ -15,6 +15,7 @@ except:
 from static_map_generator.views.views import RestView
 from static_map_generator.validators import ValidationFailure
 from static_map_generator.views.exceptions import internal_server_error
+import responses
 
 
 settings = appconfig('config:' + os.path.join(os.path.dirname(__file__), 'test.ini'))
@@ -53,14 +54,26 @@ class ViewTests(unittest.TestCase):
         home = rest_view.home()
         self.assertEqual('200 OK', home.status)
 
+    @responses.activate
     def test_maps_by_post(self):
+        with open(os.path.join(os.path.dirname(__file__), 'fixtures/grb.png'), 'rb') as f:
+            grb_image = f.read()
+        responses.add(responses.GET,
+                      'http://geoservices.informatievlaanderen.be/raadpleegdiensten/GRB-basiskaart-grijs/wms',
+                      body=grb_image, status=200, content_type='application/json')
         self.request.json_body = grb_and_geojson
         rest_view = RestView(self.request)
         res = rest_view.maps_by_post_stream()
         self.assertEqual('200 OK', res.status)
         self.assertIsNotNone(res.body)
 
+    @responses.activate
     def test_maps_by_post_base64(self):
+        with open(os.path.join(os.path.dirname(__file__), 'fixtures/grb.png'), 'rb') as f:
+            grb_image = f.read()
+        responses.add(responses.GET,
+                      'http://geoservices.informatievlaanderen.be/raadpleegdiensten/GRB-basiskaart-grijs/wms',
+                      body=grb_image, status=200, content_type='application/json')
         self.request.json_body = grb_and_geojson
         rest_view = RestView(self.request)
         res = rest_view.maps_by_post_base64()

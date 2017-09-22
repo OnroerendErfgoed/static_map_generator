@@ -1,18 +1,10 @@
 {
   "params": {
-    "epsg": 31370,
     "width": 500,
-    "height": 500,
-    "bbox": [
-      103990,
-      195000,
-      104250,
-      196100
-    ]
+    "height": 500
   },
   "layers": [
     {
-      "color": "steelblue",
       "geojson": {
         "coordinates": [
           [
@@ -54,26 +46,19 @@
         ],
         "type": "MultiPolygon"
       },
-      "opacity": 0.5,
       "type": "geojson"
+    },
+    {
+      "type": "text",
+      "text": "© GRB basiskaart, informatie Vlaanderen",
+      "gravity": "south_east",
+      "font_size": 4
     },
     {
 
       "type": "wms",
       "url": "http://geoservices.informatievlaanderen.be/raadpleegdiensten/GRB-basiskaart-grijs/wms?",
-      "layers": "GRB_BSK_GRIJS",
-      "filename": "filename",
-      "epsg": 31370,
-      "filetype": "png",
-      "width": 500,
-      "height": 500,
-      "bbox": [
-        103990,
-        195000,
-        104250,
-        196100
-      ]
-
+      "layers": "GRB_BSK_GRIJS"
     }
   ]
 }
