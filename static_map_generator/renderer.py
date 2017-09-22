@@ -106,6 +106,17 @@ class ScaleRenderer(Renderer):
 
         with Image(filename=kwargs['filename'], resolution=300) as image:
             with Drawing() as draw:
+                draw.stroke_color = Color('white')
+                draw.fill_color = Color('white')
+                points = [(0, kwargs['height'] - buffer * 4),
+                          (0, kwargs['height']),
+                          (scale_width + (buffer * 2), kwargs['height']),
+                          (scale_width + (buffer * 2), kwargs['height'] - buffer * 4),
+                          (0, kwargs['height'] - buffer * 4)
+                          ]
+                draw.polyline(points)
+                draw(image)
+            with Drawing() as draw:
                 draw.stroke_color = Color('black')
                 draw.fill_color = Color('white')
                 points = [(buffer, kwargs['height'] - buffer * 3),
