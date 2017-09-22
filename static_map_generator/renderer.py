@@ -9,7 +9,7 @@ import requests
 import mapnik
 from wand.color import Color
 from wand.image import Image
-from static_map_generator.utils import merge_dicts
+from static_map_generator.utils import merge_dicts, calculate_scale
 from wand.drawing import Drawing
 
 json_item_renderer = JSON()
@@ -101,15 +101,7 @@ class TextRenderer(Renderer):
 
 class ScaleRenderer(Renderer):
     def render(self, **kwargs):
-
-        # calculate scale
-        image_width_meter = round(kwargs['map_scale'] * float(kwargs['width']))
-        scale_num_guess = str(int(round(image_width_meter * 0.2)))
-        scale_num = int(2 * round(float(int(scale_num_guess[0])) / 2)) * 10 ** (len(scale_num_guess[1:]))
-        scale_num = scale_num if scale_num else 1 * 10 ** (len(scale_num_guess[1:]))
-        scale_width = round(scale_num / kwargs['map_scale'])
-        scale_label = "{} m".format(scale_num) if scale_num < 1000 else "{} km".format(scale_num/1000)
-
+        scale_width, scale_label = calculate_scale(kwargs['map_scale'], kwargs['width'])
         buffer = 5
 
         with Image(filename=kwargs['filename'], resolution=300) as image:

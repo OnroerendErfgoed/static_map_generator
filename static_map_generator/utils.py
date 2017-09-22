@@ -33,3 +33,19 @@ def rescale_bbox(height, width, bbox):
     else:
         return bbox
 
+
+def calculate_scale(map_scale, map_width):
+    """
+    Calculates the image scale with in pixels together with the scale label
+    using map scale (meters per pixels) and map width (pixels)
+    """
+    image_width_meter = round(map_scale * float(map_width))
+    scale_num_guess = str(int(round(image_width_meter * 0.2)))
+    scale_num = int(2 * round(float(int(scale_num_guess[0])) / 2)) * 10 ** (len(scale_num_guess[1:]))
+    scale_num = scale_num if scale_num else 1 * 10 ** (len(scale_num_guess[1:]))
+    scale_width = round(scale_num / map_scale)
+    scale_label = "{} m".format(scale_num) if scale_num < 1000 else "{} km".format(scale_num/1000)
+
+    return scale_width, scale_label
+
+
