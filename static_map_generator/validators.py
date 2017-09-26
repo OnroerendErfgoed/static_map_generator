@@ -146,8 +146,8 @@ class LayerSchemaNode(colander.MappingSchema):
             optional_validator('color', 'steelblue', node, cstruct, string_validator)
         elif cstruct['type'] == 'text':
             required_validator('text', 'text', node, cstruct, string_validator)
-            optional_validator('gravity', 'center', node, cstruct, gravity_validator)
-            optional_validator('font_size', 10, node, cstruct, number_validator)
+            required_validator('gravity', 'center', node, cstruct, gravity_validator)
+            required_validator('font_size', 10, node, cstruct, number_validator)
 
 
 class Layers(colander.SequenceSchema):

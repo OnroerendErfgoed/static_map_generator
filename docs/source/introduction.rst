@@ -4,29 +4,34 @@ Introduction
 
 The goal of this Static Map Generator (SMG) is to generate static maps that are composed of:
 
-* different geographical formats: WMS, WKT, GeoJSON, ...
-* Layout-overlays: Text, Logo, Scale, ...
+* different geographical formats like GeoJSON
+* a background layer like WMS
+* layout-overlays like Text, and Scale.
 
-Based on a configuration file, the SMG renders all individual layers to temporary images and combines these temporary images to the final output image.
+Based on a configuration file, the SMG renders all individual layers to a temporary image.
+
+The image will contain a scale bar.
+
+The image can be returned as a steam or a base64 format.
 
 Use
-=======
+===
 
 As a Library
 ------------
 * Import Generator from static_map_generator.generator
 * Create a configuration file
-* Generator.generate('config')
+* Generator.generate_stream('config') or Generator.generate_base64('config')
 
 As a Service
 ------------
 * POST the config-file (json) to the REST endpoint: http://localhost:6543/maps
-* The service returns the generated image
+* The service returns the generated image as a stream or base64 depending on the Accept header.
 
 Example
 =======
 
-Let's clarify this with an example:
+Let's clarify this with examples:
 
 Library
 -------
@@ -35,9 +40,63 @@ Library
     :language: python
 
 
+Example 1: |pic1|   Example 2: |pic2|
+
+.. |pic1| image:: /../../examples/map_simple_example_1.png
+
+.. |pic2| image:: /../../examples/map_simple_example_2.png
+
+
 Service
 -------
 
+Create image
+
+**Example request**:
+
+.. sourcecode:: http
+
+    POST /maps HTTP/1.1
+    Host: http://localhost:6543
+    Accept: application/octet-stream
+    Content-Type: application/json
+    OpenAmSSOID: AQIC5wM2LY4Sfcz_rOiD3t033xN0-E5ItHoSUOU.*
+
+    {
+      "params": {
+        "width": 650,
+        "height": 1000
+      },
+      "layers": [
+        {
+          "geojson": {
+            "coordinates": [
+                [
+                    [173226.56, 174184.28],
+                    [173300.48, 174325.52],
+                    [173323.41, 174314.54],
+                    [173259.49, 174172.57],
+                    [173226.56, 174184.28]
+                ]
+            ],
+            "type": "Polygon"
+          },
+          "type": "geojson"
+        },
+        {
+          "type": "text",
+          "text": "© GRB basiskaart, informatie Vlaanderen",
+          "gravity": "south_east",
+          "font_size": 4
+        },
+        {
+
+          "type": "wms",
+          "url": "http://geoservices.informatievlaanderen.be/raadpleegdiensten/GRB-basiskaart-grijs/wms?",
+          "layers": "GRB_BSK_GRIJS"
+        }
+      ]
+    }
 
 
 Configuration
@@ -58,12 +117,8 @@ params-object
 ============    ================================================    ==========  ==========  ===============
 Key             Description                                         Type        Mandatory   Example
 ============    ================================================    ==========  ==========  ===============
-'filename'      path for the output map                             String      True        'simple.png'
-'epsg'          spatial reference system - epsg                     Integer     True        4326
-'filetype'      Format for the output map                           String      True        'png'
 'width'         width for the output map                            Integer     True        500
 'height'        height for the output map                           Integer     True        500
-'bbox'          an array of coordinates to define bounding box      Array       True        [4, 50, 5, 51]
 ============    ================================================    ==========  ==========  ===============
 
 layer-object
@@ -71,7 +126,7 @@ layer-object
 The parameters for each layer differ based on the type of layer:
 
 WMS
-^^^^^^^
+^^^
 
 ============    ================================================    ==========  ==========  ===============
 Key             Description                                         Type        Mandatory   Example
@@ -91,34 +146,8 @@ Key             Description                                         Type        
 ============    ================================================    ==========  ==========  ===============
 'type'          Type of layer                                       String      True        'geojson'
 'geojson'       geojson-notation of geometry                        String      True        {'crs': {'type': 'name', 'properties': {'name': 'EPSG:31370'}}, 'type': 'MultiPoint', 'coordinates': [[103912.03, 192390.11],[103500, 192390.11]]}
-'color'         colorcode (RGB, HEX, named color)                   String      True        'steelblue'
-'opacity'       opacity                                             Numeric     True        0.6
 ============    ================================================    ==========  ==========  ===============
 
-WKT
-^^^^^^^
-
-============    ================================================    ==========  ==========  ===============
-Key             Description                                         Type        Mandatory   Example
-============    ================================================    ==========  ==========  ===============
-'type'          Type of layer                                       String      True        'wkt'
-'wkt'           WKT-notation of geometry                            String      True        'POLYGON ((4.5 50.2, 5 50.2, 5 50, 4.5 50.2))'
-'color'         colorcode (RGB, HEX, named color)                   String      True        'steelblue'
-'opacity'       opacity                                             Numeric     True        0.6
-============    ================================================    ==========  ==========  ===============
-
-
-Logo
-^^^^^^
-
-============    ================================================    ==========  ==========  ===============
-Key             Description                                         Type        Mandatory   Example
-============    ================================================    ==========  ==========  ===============
-'type'          Type of layer                                       String      True        'logo'
-'path'          path of the logo to be used                         String      True        'logo.png'
-'url'           url of the logo to be used                          String      True        'https://www.onroerenderfgoed.be/assets/img/logo-og.png'
-'opacity'       opacity                                             Numeric     True        0.6
-============    ================================================    ==========  ==========  ===============
 
 Text
 ^^^^^^
@@ -129,49 +158,29 @@ Key             Description                                         Type        
 'type'          Type of layer                                       String      True        'text'
 'text'          Text to be used for the layer                       String      True        'This is a test'
 'font_size'     Font size                                           Integer     True        24
-'text_color'    colorcode (RGB, HEX, named color)                   String      True        'steelblue'
+'gravity'       Gravity ('center', 'north_west', 'north_east',      String      True        'south_east'
+                 'south_west', 'south_east')
 ============    ================================================    ==========  ==========  ===============
-
-Scale
-^^^^^^^
-
-Not implemented yet
-
-Legend
-^^^^^^^
-
-Not implemented yet
 
 
 
 Development
 ===========
-First of all, Mapnik (2.3) and all dependencies has to be installed on your machine and available from a virtual environment.
-
-* Follow installation instructions on https://github.com/mapnik/mapnik/wiki/UbuntuInstallation **Install Mapnik from source** (Mapnik 2.3.x)
-* Create a virtual environment  `mkvirtualenv static_map_generator`
-* Add links to the virtual env  and mapnik packages
-```shell
-ln -s /usr/lib/python2.7/dist-packages/mapnik ~/.virtualenvs/static_map_generator/lib/python2.7/site-packages/mapnik
-ln -s /usr/lib/python2.7/dist-packages/mapnik2 ~/.virtualenvs/static_map_generator/lib/python2.7/site-packages/mapnik2
-```
-* Follow further basic development instructions
-```shell
-(static_map_generator) pip install -r requirements-dev.txt
-(static_map_generator) python setup.py develop
-(static_map_generator) pserve development.ini
-```
-
+- Installation of Mapnik required:
+   - Easiest way is to use following `docker container`_ (or the commands in this).
+   - The virtualenv can be created with required requirements of static_map_generator.
+   - Then add mapnik python binding by `pip install -e /opt/python-mapnik`
+- Make sure the `/tmp` folder is cleaned on regular basis (The cleaning of `/tmp` is done by the upstart script `/etc/init/mounted-tmp.conf`. The script is run by upstart everytime `/tmp` is mounted. Practically that means at every boot.)
 Manik is now available on your machine and executable from a virtual python environment.
 
 .. code-block:: bash
     $ pip install -r requirements-dev.txt
+    $ python setup.py develop
     $ pserve development.ini
 
 We try to cover as much code as we can with unit tests. You can run them using
 tox_ or directly through pytest. When providing a pull request, please run the
-unit tests first and make sure they all pass. Please provide new unit tests
-to maintain 100% coverage.
+unit tests first and make sure they all pass.
 
 .. code-block:: bash
 
@@ -184,3 +193,4 @@ to maintain 100% coverage.
     $ py.test static_map_generator/tests/test_renderer.py
 
 .. _tox: http://tox.testrun.org
+.. _`docker container`: https://hub.docker.com/r/akx0/mapnik/~/dockerfile/
