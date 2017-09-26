@@ -8,6 +8,7 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPBadRequest
 import colander
 from static_map_generator.validators import ValidationFailure
+from pyramid.compat import text_
 
 log = logging.getLogger(__name__)
 
@@ -49,7 +50,7 @@ class RestView(object):
         params = self._get_params()
         config = self.validate_config(params)
         res = Response(content_type='image/png')
-        res.status = '200 OK'
+        self.request.response.status = 201
         res.body = Generator.generate_stream(config)
         return res
 
@@ -60,7 +61,7 @@ class RestView(object):
         config = self.validate_config(params)
         self.request.response.status = 201
         return {
-            'image':  Generator.generate_base64(config)
+            'image':  text_(Generator.generate_base64(config))
         }
 
 

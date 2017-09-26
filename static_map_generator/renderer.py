@@ -28,15 +28,9 @@ class Renderer(object):
             return TextRenderer()
         elif layer_type == "scale":
             return ScaleRenderer()
-        else:
-            return DefaultRenderer()
 
     @abstractmethod
     def render(self, **kwargs):     # pragma: no cover
-        pass
-
-    @abstractmethod
-    def type(self):                 # pragma: no cover
         pass
 
 
@@ -61,9 +55,6 @@ class WmsRenderer(Renderer):
         res.raise_for_status()
         return res.content
 
-    def type(self):
-        return "wms"
-
 
 class GeojsonRenderer(Renderer):
     def render(self, **kwargs):
@@ -75,9 +66,6 @@ class GeojsonRenderer(Renderer):
         layer = mapnik.Layer('geojson' + str(kwargs['idx']), '+init=epsg:31370')
         layer.datasource = ds
         return layer
-
-    def type(self):
-        return "geojson"
 
 
 class TextRenderer(Renderer):
@@ -94,9 +82,6 @@ class TextRenderer(Renderer):
                 draw(image)
 
             image.save(filename=kwargs['filename'])
-
-    def type(self):
-        return "text"
 
 
 class ScaleRenderer(Renderer):
@@ -137,14 +122,3 @@ class ScaleRenderer(Renderer):
                 draw.text(int(scale_width / 2), buffer, scale_label)
                 draw(image)
             image.save(filename=kwargs['filename'])
-
-    def type(self):
-        return "scale"
-
-
-class DefaultRenderer(Renderer):
-    def render(self, **kwargs):
-        raise NotImplementedError("This method is not yet implemented")
-
-    def type(self):
-        return "default"
