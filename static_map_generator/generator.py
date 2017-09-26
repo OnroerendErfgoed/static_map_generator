@@ -38,8 +38,8 @@ class Generator:
         s.rules.append(r)
         mapnik_map.append_style('default', s)
 
-        layers = [layer for layer in config['layers'] if layer['type'] in ['geojson']]
         # render layers
+        layers = [layer for layer in config['layers'] if layer['type'] in ['geojson']]
         for idx, layer in enumerate(layers):
             renderer = Renderer.factory(layer['type'])
             layer['idx'] = idx
@@ -54,12 +54,11 @@ class Generator:
                 raise
 
         # bbox is the given bbox or the bbox of the layers with a buffer value
-        if not config['params']['bbox']:
+        if ['bbox'] not in config['params'].keys() or not config['params']['bbox']:
             mapnik_map.zoom_all()
-            min_extend = mapnik_map.envelope()
-            mapnik_map.buffer_size = int(
-                (min(min_extend.maxx - min_extend.minx, min_extend.maxy - min_extend.miny)) * 0.5)
-            extend = mapnik_map.buffered_envelope()
+            extend = mapnik_map.envelope()
+            min_width = int(min(extend.maxx - extend.minx, extend.maxy - extend.miny))
+            extend.width(extend.width() + 10 ** (len(str(min_width)) - 1))
             bbox_layers = [extend.minx, extend.miny, extend.maxx, extend.maxy]
         else:
             bbox_layers = config['params']['bbox']

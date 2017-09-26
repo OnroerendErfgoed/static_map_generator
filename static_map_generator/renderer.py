@@ -58,7 +58,6 @@ class WmsRenderer(Renderer):
 
 class GeojsonRenderer(Renderer):
     def render(self, **kwargs):
-        # fix to create valid geojson from contour
         geojson = {"type": "Feature", "properties": {}, "geometry": {}, 'geometry': kwargs['geojson']}
         ds = mapnik.MemoryDatasource()
         feature = mapnik.Feature.from_geojson(json.dumps(geojson), mapnik.Context())

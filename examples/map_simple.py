@@ -1,36 +1,62 @@
+# -*- coding: utf-8 -*-
+import os
 from static_map_generator.generator import Generator
 
-config_simple = {
-    'params': {
-        'filename': 'simple.png',
-        'epsg': 4326,
-        'filetype': 'png',
-        'width': 500,
-        'height': 500,
-        'bbox': [4.95, 50.95, 5, 51]
-    },
-    'layers':
-        [{
-            'type': 'text',
-            'text': 'This is a test',
-            'font_size': 40,
-            'text_color': '#FF3366'
 
-
-        },
-            {
-                'type': 'wkt',
-                'wkt': 'POLYGON ((4.99 50.99, 4.995 50.99, 4.995 50, 4.99 50.99))',
-                'color': 'steelblue',
-                'opacity': 0.5
-
-            },
-            {
-                'type': 'wms',
-                'url': 'http://geo.api.agiv.be/geodiensten/raadpleegdiensten/GRB-basiskaart/wmsgr?',
-                'layers': 'GRB_BSK'
-
-            }
+examples = [
+    {
+        "name": "map_simple_example_1.png",
+        "coordinates": [
+            [
+                [173226.56, 174184.28],
+                [173300.48, 174325.52],
+                [173323.41, 174314.54],
+                [173259.49, 174172.57],
+                [173226.56, 174184.28]
+            ]
         ]
-}
-Generator.generate(config_simple)
+    }, {
+        "name": "map_simple_example_2.png",
+        "coordinates": [
+            [
+                [169839.02, 178535.12],
+                [168247.34, 166934.73],
+                [185701.87, 170037.16],
+                [185701.87, 170118.09],
+                [169839.02, 178535.12]
+            ]
+        ]
+    }
+]
+
+for example in examples:
+    config_simple = {
+      "params": {
+        "width": 325,
+        "height": 500
+      },
+      "layers": [
+        {
+          "geojson": {
+            "coordinates": example["coordinates"],
+            "type": "Polygon"
+          },
+          "type": "geojson"
+        },
+        {
+          "type": "text",
+          "text": "© GRB basiskaart, informatie Vlaanderen",
+          "gravity": "south_east",
+          "font_size": 3
+        },
+        {
+
+          "type": "wms",
+          "url": "http://geoservices.informatievlaanderen.be/raadpleegdiensten/GRB-basiskaart-grijs/wms?",
+          "layers": "GRB_BSK_GRIJS"
+        }
+      ]
+    }
+
+    with open(os.path.join(os.path.dirname(__file__), example["name"]), 'wb') as f:
+        f.write(Generator.generate_stream(config_simple))
