@@ -8,8 +8,8 @@ notifications:
   email:
     - cahytinne@geosolutions.be
 before_install:
-  - sudo apt-get -qq update libcairo-dev python-cairo-dev
-  - sudo apt-get install -y --no-install-recommends libxml2-dev
+  - sudo apt-get -qq update
+  - sudo apt-get install -y --no-install-recommends libboost-dev libboost-filesystem-dev libboost-program-options-dev libboost-python-dev libboost-regex-dev libboost-system-dev libboost-thread-dev libharfbuzz-dev
   - curl -s https://mapnik.s3.amazonaws.com/dist/v${MAPNIK_VERSION}/mapnik-v${MAPNIK_VERSION}.tar.bz2 | tar -xj -C /tmp/
   - (cd /tmp/mapnik-v${MAPNIK_VERSION} && python scons/scons.py configure)
   - (cd /tmp/mapnik-v${MAPNIK_VERSION} && make JOBS=4 && make install JOBS=4)
