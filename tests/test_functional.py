@@ -47,7 +47,7 @@ class RestFunctionalTests(FunctionalTests):
         self.assertEqual('201 Created', res.status)
 
     @responses.activate
-    def test_map(self):
+    def test_map_base64(self):
         self.testapp.get('/mock_user')
         with open(os.path.join(os.path.dirname(__file__), 'fixtures/grb.png'), 'rb') as f:
             grb_image = f.read()
