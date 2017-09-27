@@ -8,14 +8,14 @@ notifications:
   email:
     - cahytinne@geosolutions.be
 before_install:
-  - sudo chmod +x /usr/local/lib/libmapnik-json.a
-  - sudo chmod +x /usr/local/lib/libmapnik-wkt.a
-  - sudo chmod +x /usr/local/lib/libmapnik.so.3.0.10
-  - sudo chmod +x /usr/local/include/mapnik
   - sudo apt-get -qq update
   - sudo apt-get install -y --no-install-recommends libboost-dev libboost-filesystem-dev libboost-program-options-dev libboost-python-dev libboost-regex-dev libboost-system-dev libboost-thread-dev libicu-dev libtiff5-dev libfreetype6-dev libpng12-dev libxml2-dev libproj-dev libsqlite3-dev libgdal-dev libcairo-dev python-cairo-dev postgresql-contrib libharfbuzz-dev
   - curl -s https://mapnik.s3.amazonaws.com/dist/v${MAPNIK_VERSION}/mapnik-v${MAPNIK_VERSION}.tar.bz2 | tar -xj -C /tmp/
   - (cd /tmp/mapnik-v${MAPNIK_VERSION} && python2 scons/scons.py configure)
+  - sudo chmod +x /usr/local/lib/libmapnik-json.a
+  - sudo chmod +x /usr/local/lib/libmapnik-wkt.a
+  - sudo chmod +x /usr/local/lib/libmapnik.so.3.0.10
+  - sudo chmod +x /usr/local/include/mapnik
   - (cd /tmp/mapnik-v${MAPNIK_VERSION} && make JOBS=4 && make install JOBS=4)
   - (mkdir -p /opt/python-mapnik && curl -L https://github.com/mapnik/python-mapnik/archive/${PYTHON_MAPNIK_COMMIT}.tar.gz | tar xz -C /opt/python-mapnik --strip-components=1)
   - (cd /opt/python-mapnik && python setup.py install && rm -r /opt/python-mapnik/build)
