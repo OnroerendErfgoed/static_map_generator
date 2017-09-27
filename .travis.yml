@@ -1,0 +1,14 @@
+language: python
+python:
+  - "2.7"
+  - "3.5"
+env:
+  - PROJECT=static_map_generator
+notifications:
+  email:
+    - cahytinne@geosolutions.be
+install:
+  - pip install -r requirements-dev-tci.txt
+  - python setup.py develop
+script:
+  py.test --cov $PROJECT --cov-report term-missing tests

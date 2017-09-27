@@ -1,21 +1,16 @@
 Static Map Generator
 ====================
 
-Informatie over het werken met deze toepassing kun je vinden in de :file:`docs` 
-folder. Deze kan gebuild worden tot propere documentatie met behulp van 
-`Sphinx <http://sphinx-doc.org>`_.
+The goal of this Static Map Generator (SMG) is to generate static maps
+that are composed of:
 
-*Zorg dat Sphinx wel aanwezig is in de virtual environment waarin je pyramid_oeauth
-hebt geïnstalleerd.* Indien dit niet zo is, maar Sphinx wel in je systeem python
-aanwezig is, zal je meldingen krijgen dat bepaalde bestanden niet kunnen gevonden
-worden.
+-   different geographical formats like GeoJSON
+-   a background layer like WMS
+-   layout-overlays like Text, and Scale.
 
-.. code-block:: bash
+Based on a configuration file, the SMG renders all individual layers to
+a temporary image.
 
-    # activeer de virtual env
-    $ pip install sphinx
-    $ python setup.py develop
-    $ cd docs
-    $ make html
-    # Indien je een latex toolchain hebt op je systeem kun je ook een pdf bouwen.
-    $ make latexpdf
+The image will contain a scale bar.
+
+The image can be returned as a steam or a base64 format.

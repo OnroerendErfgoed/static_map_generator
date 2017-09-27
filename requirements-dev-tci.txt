@@ -1,0 +1,14 @@
+# Runtime requirements
+--requirement requirements-tci.txt
+
+# testing
+pytest==3.2.2
+py==1.4.34
+pytest-cov==2.5.1
+coveralls==1.2.0
+webtest==2.0.28
+mock==2.0.0
+responses==0.7.0
+
+# waitress
+waitress==1.0.2
