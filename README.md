@@ -163,10 +163,10 @@ Configuration
 
 The configuration is a json-object existing out of 2 basic keys:
 
-Key        Description                             Type     Mandatory
----------- --------------------------------------- -------- -----------
-'params'   general parameters for the final map    Object   True
-'layers'   an array of 'layer' for the final map   Array    True
+|Key      |  Description                          |  Type  |   Mandatory
+|---------| --------------------------------------| -------| -----------
+|'params' | general parameters for the final map  | Object | True
+|'layers' | an array of 'layer' for the final map | Array  | True
 
 ### params-object
 
