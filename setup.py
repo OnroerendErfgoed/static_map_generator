@@ -12,11 +12,9 @@ with open(os.path.join(here, 'CHANGES.txt'), encoding='utf-8') as f:
 requires = [
       'pyramid',
       'tempdir',
-      'Shapely',
       'Wand',
       'argparse',
       'requests',
-      'geojson',
       'colander',
       'rfc3987'
       ]
