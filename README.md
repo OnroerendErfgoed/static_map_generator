@@ -163,17 +163,17 @@ Configuration
 
 The configuration is a json-object existing out of 2 basic keys:
 
-  Key        Description                             Type     Mandatory
-  ---------- --------------------------------------- -------- -----------
-  'params'   general parameters for the final map    Object   True
-  'layers'   an array of 'layer' for the final map   Array    True
+Key        Description                             Type     Mandatory
+---------- --------------------------------------- -------- -----------
+'params'   general parameters for the final map    Object   True
+'layers'   an array of 'layer' for the final map   Array    True
 
 ### params-object
 
-  Key        Description                 Type      Mandatory   Example
-  ---------- --------------------------- --------- ----------- ---------
-  'width'    width for the output map    Integer   True        500
-  'height'   height for the output map   Integer   True        500
+| Key      | Description               | Type     | Mandatory |  Example
+| -------- | ------------------------- | -------- | ----------| ---------
+| 'width'  | width for the output map  | Integer  | True      | 500
+| 'height' | height for the output map | Integer  | True      | 500
 
 ### layer-object
 
@@ -181,46 +181,44 @@ The parameters for each layer differ based on the type of layer:
 
 #### WMS
 
-  Key        Description                            Type     Mandatory   Example
-  ---------- -------------------------------------- -------- ----------- ----------------------------------------------------
-  'type'     Type of layer                          String   True        'wms'
-  'url'      url of the wms-service                 String   True        '<https://geo.onroerenderfgoed.be/geoserver/wms>?'
-  'layers'   layernames to be used in wms-service   String   True        'vioe\_geoportaal:landschapsbeheersplannen'
+|Key      |  Description                           | Type   |  Mandatory  | Example
+|-------- |  ------------------------------------- | ------ |  ---------- | --------------------------------------------------
+|'type'   |  Type of layer                         | String |  True       | 'wms'
+|'url'    |  url of the wms-service                | String |  True       | '<https://geo.onroerenderfgoed.be/geoserver/wms>?'
+|'layers' |  layernames to be used in wms-service  | String |  True       | 'vioe\_geoportaal:landschapsbeheersplannen'
 
 Notice: Next to these parameters, other supported parameters of the
 wms-service can be given, f.e featureid, bgcolor, transparant, ...
 
 #### GeoJSON
 
-  Key         Description                    Type     Mandatory   Example
-  ----------- ------------------------------ -------- ----------- ----------------------------------------------------------------------------------------------------------------------------------------------------------
-  'type'      Type of layer                  String   True        'geojson'
-  'geojson'   geojson-notation of geometry   String   True        {'crs': {'type': 'name', 'properties': {'name': 'EPSG:31370'}}, 'type': 'MultiPoint', 'coordinates': \[\[103912.03, 192390.11\],\[103500, 192390.11\]\]}
+| Key       |  Description                 | Type     | Mandatory | Example
+| ----------| -----------------------------| -------- | ----------|  ---------------------------------------------------------------------------------------------------------------------------------------------------------
+| 'type'    | Type of layer                |  String  |  True     |  'geojson'
+| 'geojson' | geojson-notation of geometry |  String  |  True     |  {'crs': {'type': 'name', 'properties': {'name': 'EPSG:31370'}}, 'type': 'MultiPoint', 'coordinates': \[\[103912.03, 192390.11\],\[103500, 192390.11\]\]}
 
 #### Text
 
-  Key            Description                                        Type      Mandatory   Example
-  -------------- -------------------------------------------------- --------- ----------- ------------------
-  'type'         Type of layer                                      String    True        'text'
-  'text'         Text to be used for the layer                      String    True        'This is a test'
-  'font\_size'   Font size                                          Integer   True        24
-  'gravity'      Gravity ('center', 'north\_west', 'north\_east',   String    True        'south\_east'
-                 'south\_west', 'south\_east')                                            
+|Key          |  Description                                      |  Type    |  Mandatory |   Example
+|-------------| --------------------------------------------------| ---------|----------- |------------------
+|'type'       | Type of layer                                     | String   |True        |'text'
+|'text'       | Text to be used for the layer                     | String   |True        |'This is a test'
+|'font\_size' | Font size                                         | Integer  |True        |24
+|'gravity'    | Gravity ('center', 'north\_west', 'north\_east',  | String   |True        |'south\_east'
+              | 'south\_west', 'south\_east')                                            
 
 Development
 -----------
 
--   
+- Installation of Mapnik required:
 
-    Installation of Mapnik required:
-
-    :   -   Easiest way is to use following [docker
-            container](https://hub.docker.com/r/akx0/mapnik/~/dockerfile/)
-            (or the commands in this).
-        -   The virtualenv can be created with required requirements
-            of static\_map\_generator.
-        -   Then add mapnik python binding by
-            pip install -e /opt/python-mapnik
+    -   Easiest way is to use following [docker
+        container](https://hub.docker.com/r/akx0/mapnik/~/dockerfile/)
+        (or the commands in this).
+    -   The virtualenv can be created with required requirements
+        of static\_map\_generator.
+    -   Then add mapnik python binding by
+        pip install -e /opt/python-mapnik
 
 - Make sure the /tmp folder is cleaned on regular basis (The cleaning of
 /tmp is done by the upstart script /etc/init/mounted-tmp.conf. The
