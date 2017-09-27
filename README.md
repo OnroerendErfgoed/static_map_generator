@@ -204,8 +204,7 @@ wms-service can be given, f.e featureid, bgcolor, transparant, ...
 |'type'       | Type of layer                                     | String   |True        |'text'
 |'text'       | Text to be used for the layer                     | String   |True        |'This is a test'
 |'font\_size' | Font size                                         | Integer  |True        |24
-|'gravity'    | Gravity ('center', 'north\_west', 'north\_east',  | String   |True        |'south\_east'
-              | 'south\_west', 'south\_east')                                            
+|'gravity'    | Gravity                                           | String   |True        |'south\_east'
 
 Development
 -----------
