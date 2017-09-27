@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import colander
 import rfc3987
-from shapely import geometry
+import mapnik
 import json
-import geojson
 from pyramid.compat import text_, long
 
 
@@ -30,15 +29,16 @@ def uri_validator(node, uri):
 
 def geojson_validator(node, geojson_input):
     """
-    Geojson/Shapely geojson validator.
+    Mapnik geojson validator.
 
     :param node: The schema node to which this exception relates.
     :param geojson_input: Geojson to validate.
     """
     try:
-        geojson_dump = json.dumps(geojson_input)
-        geojson_load = geojson.loads(geojson_dump)
-        geometry.shape(geojson_load)
+        geojson_for_mapnik = {"type": "Feature", "properties": {}, "geometry": {}, 'geometry': geojson_input}
+        geojson_dump = json.dumps(geojson_for_mapnik)
+        ctx = mapnik.Context()
+        mapnik.Feature.from_geojson(geojson_dump, ctx)
     except Exception:
         raise colander.Invalid(
             node,
