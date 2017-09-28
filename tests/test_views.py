@@ -6,6 +6,7 @@ from paste.deploy.loadwsgi import appconfig
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.compat import text_
+from copy import deepcopy
 
 try:
     from unittest.mock import Mock, patch, MagicMock, PropertyMock
@@ -64,7 +65,7 @@ class ViewTests(unittest.TestCase):
         self.request.json_body = grb_and_geojson
         rest_view = RestView(self.request)
         res = rest_view.maps_by_post_stream()
-        self.assertEqual('200 OK', res.status)
+        self.assertEqual('201 Created', res.status)
         self.assertIsNotNone(res.body)
 
     @responses.activate
@@ -74,7 +75,9 @@ class ViewTests(unittest.TestCase):
         responses.add(responses.GET,
                       'http://geoservices.informatievlaanderen.be/raadpleegdiensten/GRB-basiskaart-grijs/wms',
                       body=grb_image, status=200, content_type='application/json')
-        self.request.json_body = grb_and_geojson
+        grb_and_geojson_with_bbox = deepcopy(grb_and_geojson)
+        grb_and_geojson_with_bbox['params']['bbox'] = [104095, 196078, 104200, 196200]
+        self.request.json_body = grb_and_geojson_with_bbox
         rest_view = RestView(self.request)
         res = rest_view.maps_by_post_base64()
         self.assertIsNotNone(res['image'])

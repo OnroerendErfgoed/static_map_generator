@@ -54,7 +54,7 @@ class Generator:
                 raise
 
         # bbox is the given bbox or the bbox of the layers with a buffer value
-        if ['bbox'] not in config['params'].keys() or not config['params']['bbox']:
+        if config['params'].get('bbox') is None:
             mapnik_map.zoom_all()
             extend = mapnik_map.envelope()
             min_width = int(min(extend.maxx - extend.minx, extend.maxy - extend.miny))

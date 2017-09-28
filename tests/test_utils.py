@@ -30,5 +30,7 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual([0, 2, 4, 4], new_bbox)
         new_bbox = rescale_bbox(10, 5, bbox)
         self.assertEqual([1, 1, 3, 5], new_bbox)
+        new_bbox = rescale_bbox(5, 5, bbox)
+        self.assertEqual([1, 2, 3, 4], new_bbox)
 
 

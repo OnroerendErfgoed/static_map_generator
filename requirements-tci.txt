@@ -14,10 +14,6 @@ tempdir==0.7.1
 colander==1.4
 rfc3987==1.3.7
 
-# authentication
-file:../static_map_generator/oeauth#egg=oeauth
-file:../static_map_generator/pyramid_oeauth#egg=pyramid_oeauth
-
 # caching
 dogpile.cache==0.5.7
 dcextensions==0.0.1
@@ -25,3 +21,18 @@ dcextensions==0.0.1
 # redis
 redis==2.10.6
 pyramid_redis==0.1.4
+
+# pyramid
+pyramid_debugtoolbar==4.3
+
+# testing
+pytest==3.2.2
+py==1.4.34
+pytest-cov==2.5.1
+coveralls==1.2.0
+webtest==2.0.28
+mock==2.0.0
+responses==0.7.0
+
+# waitress
+waitress==1.0.2
