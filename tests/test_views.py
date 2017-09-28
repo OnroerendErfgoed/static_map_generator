@@ -64,7 +64,7 @@ class ViewTests(unittest.TestCase):
         self.request.json_body = grb_and_geojson
         rest_view = RestView(self.request)
         res = rest_view.maps_by_post_stream()
-        self.assertEqual('200 OK', res.status)
+        self.assertEqual('201 Created', res.status)
         self.assertIsNotNone(res.body)
 
     @responses.activate
