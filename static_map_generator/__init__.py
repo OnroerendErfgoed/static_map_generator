@@ -22,8 +22,8 @@ def includeme(config):
     config.add_renderer('itemjson', json_item_renderer)
 
     # # Add authn/authz
-    if config.registry.settings['oeauth.include'] == 'true':
-        config.include('pyramid_oeauth')
+    if config.registry.settings['oeauth.include'] == 'True':
+        config.include('pyramid_oeauth')  # pragma: no cover
 
     # Scanning the view package to load view_config objects
     config.scan('static_map_generator.views')
