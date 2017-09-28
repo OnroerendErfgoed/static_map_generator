@@ -49,8 +49,7 @@ class RestView(object):
     def maps_by_post_stream(self):
         params = self._get_params()
         config = self.validate_config(params)
-        res = Response(content_type='image/png')
-        self.request.response.status = 201
+        res = Response(status=201, content_type='image/png')
         res.body = Generator.generate_stream(config)
         return res
 
