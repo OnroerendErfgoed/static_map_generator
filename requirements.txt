@@ -1,3 +1,6 @@
+# Runtime requirements for which access is required by Onroerend Erfgoed
+--requirement requirements-oe.txt
+
 # pyramid
 pyramid==1.9.1
 pyramid_tm==2.2

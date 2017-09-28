@@ -34,8 +34,7 @@ class FunctionalTests(unittest.TestCase):
 class RestFunctionalTests(FunctionalTests):
 
     @responses.activate
-    def test_map(self):
-        self.testapp.get('/mock_user')
+    def test_map_image(self):
         with open(os.path.join(os.path.dirname(__file__), 'fixtures/grb.png'), 'rb') as f:
             grb_image = f.read()
         responses.add(responses.GET,
@@ -48,7 +47,6 @@ class RestFunctionalTests(FunctionalTests):
 
     @responses.activate
     def test_map_base64(self):
-        self.testapp.get('/mock_user')
         with open(os.path.join(os.path.dirname(__file__), 'fixtures/grb.png'), 'rb') as f:
             grb_image = f.read()
         responses.add(responses.GET,
@@ -59,26 +57,21 @@ class RestFunctionalTests(FunctionalTests):
         self.assertIn('application/json', res.headers['Content-Type'])
         self.assertEqual('201 Created', res.status)
 
-    def test_not_authorized(self):
-        res = self.testapp.post('/maps', "{}",
-                                headers={'Accept': 'application/json', 'Content-Type': 'application/json'},
-                                expect_errors=True)
-        self.assertEqual('401 Unauthorized', res.status)
+    # def test_not_authorized(self):
+    #     res = self.testapp.post('/maps', "{}",
+    #                             headers={'Accept': 'application/json', 'Content-Type': 'application/json'},
+    #                             expect_errors=True)
+    #     self.assertEqual('401 Unauthorized', res.status)
 
     def test_not_found(self):
-        self.testapp.get('/mock_user')
         res = self.testapp.post('/notfound', json.dumps({}), headers={'Accept': 'application/json'}, expect_errors=True)
         self.assertEqual('404 Not Found', res.status)
         res = self.testapp.get('/maps', json.dumps({}), headers={'Accept': 'application/json'}, expect_errors=True)
         self.assertEqual('404 Not Found', res.status)
 
     def test_failed_validation(self):
-        self.testapp.get('/mock_user')
         res = self.testapp.post('/maps', json.dumps({}), headers={'Accept': 'application/json'}, expect_errors=True)
         self.assertEqual(400, res.status_int)
 
     def test_validationerror(self):
-        self.testapp.get('/mock_user')
         self.assertRaises(Exception, self.testapp.post, '/maps', "{}", headers={'Accept': 'application/json'})
-
-
