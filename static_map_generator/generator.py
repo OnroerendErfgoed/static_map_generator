@@ -95,11 +95,10 @@ class Generator:
 
         # add text
         text_layers = [layer for layer in config['layers'] if layer['type'] == 'text']
-        text = text_layers[0] if len(text_layers) > 0 else None
-        if text:
+        for text_layer in text_layers:
             renderer = Renderer.factory('text')
             config['params']['filename'] = filename
-            kwargs = merge_dicts(config['params'], text)
+            kwargs = merge_dicts(config['params'], text_layer)
             try:
                 renderer.render(**kwargs)
             except Exception as e:
