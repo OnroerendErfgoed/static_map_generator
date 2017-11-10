@@ -33,10 +33,15 @@ class Generator:
         line_symbolizer = mapnik.LineSymbolizer()
         line_symbolizer.fill = mapnik.Color('rgb(50%,50%,50%)')
         r.symbols.append(line_symbolizer)
-        point_symbolizer = mapnik.PointSymbolizer()
-        r.symbols.append(point_symbolizer)
         s.rules.append(r)
         mapnik_map.append_style('default', s)
+        s = mapnik.Style()
+        r = mapnik.Rule()
+        point_symbolizer = mapnik.PointSymbolizer()
+        point_symbolizer.file = os.path.abspath(os.path.dirname(__file__)) + '/fixtures/pointer.svg'
+        r.symbols.append(point_symbolizer)
+        s.rules.append(r)
+        mapnik_map.append_style('point', s)
 
         # render layers
         layers = [layer for layer in config['layers'] if layer['type'] in ['geojson']]
@@ -58,7 +63,8 @@ class Generator:
             mapnik_map.zoom_all()
             extend = mapnik_map.envelope()
             min_width = int(min(extend.maxx - extend.minx, extend.maxy - extend.miny))
-            extend.width(extend.width() + 10 ** (len(str(min_width)) - 1))
+            min_width_param = max(len(str(min_width)) - 1, 2)
+            extend.width(extend.width() + 10 ** min_width_param)
             bbox_layers = [extend.minx, extend.miny, extend.maxx, extend.maxy]
         else:
             bbox_layers = config['params']['bbox']

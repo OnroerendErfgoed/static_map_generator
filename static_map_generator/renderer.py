@@ -58,11 +58,13 @@ class WmsRenderer(Renderer):
 
 class GeojsonRenderer(Renderer):
     def render(self, **kwargs):
-        geojson = {"type": "Feature", "properties": {}, "geometry": {}, 'geometry': kwargs['geojson']}
+        geojson = {"type": "Feature", "properties": {}, 'geometry': kwargs['geojson']}
         ds = mapnik.MemoryDatasource()
         feature = mapnik.Feature.from_geojson(json.dumps(geojson), mapnik.Context())
         ds.add_feature(feature)
         layer = mapnik.Layer('geojson' + str(kwargs['idx']), '+init=epsg:31370')
+        if 'point' in kwargs['geojson']['type'].lower():
+            layer.styles.append('point')
         layer.datasource = ds
         return layer
 
