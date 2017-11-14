@@ -9,7 +9,7 @@ notifications:
     - cahytinne@geosolutions.be
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y --no-install-recommends libboost-dev libboost-filesystem-dev libboost-program-options-dev libboost-python-dev libboost-regex-dev libboost-system-dev libboost-thread-dev libicu-dev libtiff5-dev libfreetype6-dev libpng12-dev libxml2-dev libproj-dev libsqlite3-dev libgdal-dev libcairo-dev python-cairo-dev postgresql-contrib libharfbuzz-dev
+  - sudo apt-get install -y --no-install-recommends libboost-dev libboost-filesystem-dev libboost-program-options-dev libboost-python-dev libboost-regex-dev libboost-system-dev libboost-thread-dev libicu-dev libtiff5-dev libfreetype6-dev libpng12-dev libxml2-dev libproj-dev libsqlite3-dev libgdal-dev libcairo-dev python-cairo-dev postgresql-contrib-9.2 libharfbuzz-dev
   - curl -s https://mapnik.s3.amazonaws.com/dist/v${MAPNIK_VERSION}/mapnik-v${MAPNIK_VERSION}.tar.bz2 | tar -xj -C /tmp/
   - (cd /tmp/mapnik-v${MAPNIK_VERSION} && ${PYTHON} scons/scons.py configure)
   - (cd /tmp/mapnik-v${MAPNIK_VERSION} && sudo make JOBS=4 && sudo make install JOBS=4)
