@@ -28,3 +28,5 @@ dcextensions==0.0.1
 # redis
 redis==2.10.6
 pyramid_redis==0.1.4
+
+mapnik==0.1
