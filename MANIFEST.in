@@ -1,1 +1,2 @@
 include *.txt *.ini *.cfg *.rst
+recursive-include static_map_generator *.ico *.png *.css *.gif *.jpg *.pt *.txt *.mak *.mako *.js *.html *.xml *.jinja2 *.json *.woff *.ttf *.map *.eot *.svg *.woff2 *.otf *.geojson *.pdf
