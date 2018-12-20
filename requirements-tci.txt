@@ -1,6 +1,6 @@
 # pyramid
 pyramid==1.9.1
-pyramid_tm==2.2
+pyramid_tm==2.2.1
 pyramid_rewrite==0.2
 
 # cors
