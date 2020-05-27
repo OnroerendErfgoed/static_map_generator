@@ -20,7 +20,7 @@ requires = [
       ]
 
 setup(name='static_map_generator',
-      version='0.1.0',
+      version='0.2.0',
       description='static_map_generator',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
