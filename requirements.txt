@@ -3,14 +3,14 @@
 
 # pyramid
 pyramid==1.9.1
-pyramid_tm==2.2
+pyramid_tm==2.2.1
 pyramid_rewrite==0.2
 
 # cors
-wsgicors==0.6.0
+wsgicoers==0.8.2
 
 wand==0.4.4
-requests==2.18.4
+requests==2.21.0
 tempdir==0.7.1
 
 # validation
@@ -18,8 +18,8 @@ colander==1.4
 rfc3987==1.3.7
 
 # authentication
-oeauth==1.1.0
-pyramid_oeauth==1.2.0
+oeauth==1.2.0
+pyramid_oeauth==1.4.0
 
 # caching
 dogpile.cache==0.5.7
