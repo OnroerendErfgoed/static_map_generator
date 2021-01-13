@@ -1,7 +1,11 @@
 import os
 import unittest
+
 import tempdir
-from static_map_generator.utils import merge_dicts, rescale_bbox, calculate_scale
+
+from static_map_generator.utils import calculate_scale
+from static_map_generator.utils import merge_dicts
+from static_map_generator.utils import rescale_bbox
 
 
 class UtilsTests(unittest.TestCase):
@@ -32,5 +36,3 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual([1, 1, 3, 5], new_bbox)
         new_bbox = rescale_bbox(5, 5, bbox)
         self.assertEqual([1, 2, 3, 4], new_bbox)
-
-

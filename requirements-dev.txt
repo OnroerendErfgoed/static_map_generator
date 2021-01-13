@@ -2,22 +2,23 @@
 --requirement requirements.txt
 
 # testing
-pytest==3.2.2
-py==1.4.34
-pytest-cov==2.5.1
-coveralls==1.2.0
-webtest==2.0.28
-mock==2.0.0
-responses==0.7.0
+pytest==6.2.1
+py==1.10.0
+pytest-cov==2.10.1
+coveralls==3.0.0
+webtest==2.0.35
+mock==4.0.3
+responses==0.12.1
+
 
 # pyramid
-pyramid_debugtoolbar==4.3
+pyramid_debugtoolbar==4.9
 
 # documentation
-Sphinx==1.6.4
-sphinxcontrib-httpdomain==1.4.0
-sphinx_rtd_theme==0.1.9
-sphinxcontrib-plantuml==0.7
+Sphinx==3.4.3
+sphinxcontrib-httpdomain==1.7.0
+sphinx_rtd_theme==0.5.1
+sphinxcontrib-plantuml==0.19
 
 # waitress
-waitress==1.0.2
+waitress==1.4.4

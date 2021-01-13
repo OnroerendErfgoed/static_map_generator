@@ -1,21 +1,24 @@
-# -*- coding: utf-8 -*-
 """
 Adapters to help render map layers
 """
-from abc import ABCMeta, abstractmethod
 import json
-from pyramid.renderers import JSON
-import requests
+from abc import ABCMeta
+from abc import abstractmethod
+
 import mapnik
+import requests
+from pyramid.renderers import JSON
 from wand.color import Color
-from wand.image import Image
-from static_map_generator.utils import merge_dicts, calculate_scale
 from wand.drawing import Drawing
+from wand.image import Image
+
+from static_map_generator.utils import calculate_scale
+from static_map_generator.utils import merge_dicts
 
 json_item_renderer = JSON()
 
 
-class Renderer(object):
+class Renderer:
     __metaclass__ = ABCMeta
 
     @staticmethod
@@ -30,7 +33,7 @@ class Renderer(object):
             return ScaleRenderer()
 
     @abstractmethod
-    def render(self, **kwargs):     # pragma: no cover
+    def render(self, **kwargs):  # pragma: no cover
         pass
 
 
@@ -45,7 +48,8 @@ class WmsRenderer(Renderer):
             "request": "GetMap",
             "styles": '',
             "srs": "EPSG:31370",
-            "bbox": str(kwargs['bbox'][0]) + "," + str(kwargs['bbox'][1]) + "," + str(kwargs['bbox'][2]) + ","
+            "bbox": str(kwargs['bbox'][0]) + "," + str(kwargs['bbox'][1]) + "," + str(
+                kwargs['bbox'][2]) + ","
                     + str(kwargs['bbox'][3]),
             "width": kwargs['width'],
             "height": kwargs['height']
@@ -71,7 +75,6 @@ class GeojsonRenderer(Renderer):
 
 class TextRenderer(Renderer):
     def render(self, **kwargs):
-
         with Image(filename=kwargs['filename'], resolution=300) as image:
             with Drawing() as draw:
                 draw.font = '/Library/Fonts/Verdana.ttf'

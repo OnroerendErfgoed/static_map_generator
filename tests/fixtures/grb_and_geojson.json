@@ -55,7 +55,6 @@
       "font_size": 4
     },
     {
-
       "type": "wms",
       "url": "http://geoservices.informatievlaanderen.be/raadpleegdiensten/GRB-basiskaart-grijs/wms?",
       "layers": "GRB_BSK_GRIJS"

@@ -1,7 +1,8 @@
 import os
-
-from setuptools import setup, find_packages
 from codecs import open
+
+from setuptools import find_packages
+from setuptools import setup
 
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
@@ -10,23 +11,23 @@ with open(os.path.join(here, 'CHANGES.txt'), encoding='utf-8') as f:
     CHANGES = f.read()
 
 requires = [
-      'pyramid',
-      'tempdir',
-      'Wand',
-      'argparse',
-      'requests',
-      'colander',
-      'rfc3987'
-      ]
+    'pyramid',
+    'tempdir',
+    'Wand',
+    'argparse',
+    'requests',
+    'colander',
+    'rfc3987'
+]
 
 setup(name='static_map_generator',
       version='0.1.0',
       description='static_map_generator',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
-        "Programming Language :: Python",
-        "Framework :: Pyramid"
-        ],
+          "Programming Language :: Python",
+          "Framework :: Pyramid"
+      ],
       author='Flanders Heritage Agency',
       author_email='ict@onroerenderfgoed.be',
       url='https://github.com/OnroerendErfgoed/static_map_generator',

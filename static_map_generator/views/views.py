@@ -1,19 +1,18 @@
-# -*- coding: utf-8 -*-
-
 import logging
 
-from static_map_generator.generator import Generator
+import colander
+from pyramid.compat import text_
+from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPBadRequest
-import colander
+
+from static_map_generator.generator import Generator
 from static_map_generator.validators import ValidationFailure
-from pyramid.compat import text_
 
 log = logging.getLogger(__name__)
 
 
-class RestView(object):
+class RestView:
     def __init__(self, request):
         self.request = request
 
@@ -45,7 +44,8 @@ class RestView(object):
             "Static_map_generator: service for generating a static map based on different geographic data sources.",
             content_type='text/plain', status_int=200)
 
-    @view_config(route_name='maps', request_method='POST', accept='application/octet-stream', permission='admin')
+    @view_config(route_name='maps', request_method='POST',
+                 accept='application/octet-stream', permission='admin')
     def maps_by_post_stream(self):
         params = self._get_params()
         config = self.validate_config(params)
@@ -53,15 +53,13 @@ class RestView(object):
         res.body = Generator.generate_stream(config)
         return res
 
-    @view_config(route_name='maps', request_method='POST', accept='application/json', renderer='itemjson',
+    @view_config(route_name='maps', request_method='POST', accept='application/json',
+                 renderer='itemjson',
                  permission='admin')
     def maps_by_post_base64(self):
         params = self._get_params()
         config = self.validate_config(params)
         self.request.response.status = 201
         return {
-            'image':  text_(Generator.generate_base64(config))
+            'image': text_(Generator.generate_base64(config))
         }
-
-
-

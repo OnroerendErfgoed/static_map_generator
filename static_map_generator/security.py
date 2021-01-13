@@ -1,21 +1,19 @@
-# -*- coding: utf-8 -*-
-from pyramid.security import (
-    Allow,
-    Everyone
-)
-
 import logging
+
+from pyramid.security import Allow
+from pyramid.security import Everyone
+
 log = logging.getLogger(__name__)
 
 
-class MapsFactory(object):
+class MapsFactory:
     __acl__ = [
         (Allow, Everyone, 'home'),
         (Allow, 'vioe-static-map-generator:beheerder', 'admin')
     ]
 
 
-class RootFactory(object):
+class RootFactory:
     __acl__ = [
         (Allow, Everyone, 'home'),
         (Allow, 'vioe-static-map-generator:beheerder', 'admin')

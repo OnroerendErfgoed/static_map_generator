@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
-
 from pyramid.config import Configurator
 from pyramid.session import SignedCookieSessionFactory
+
 from static_map_generator.renderer import json_item_renderer
 
 
@@ -10,7 +9,8 @@ def includeme(config):
     Include `static_map_generator` in this `Pyramid` application.
     :param pyramid.config.Configurator config: A Pyramid configurator.
     """
-    config.set_session_factory(SignedCookieSessionFactory(config.registry.settings['session_factory.secret']))
+    config.set_session_factory(
+        SignedCookieSessionFactory(config.registry.settings['session_factory.secret']))
 
     # Rewrite urls with trailing slash
     config.include('pyramid_rewrite')
@@ -33,7 +33,8 @@ def main(global_config, **settings):
     """
     This function returns a Pyramid WSGI application.
     """
-    config = Configurator(settings=settings, root_factory='static_map_generator.security.RootFactory')
+    config = Configurator(settings=settings,
+                          root_factory='static_map_generator.security.RootFactory')
 
     includeme(config)
 

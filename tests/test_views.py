@@ -1,26 +1,23 @@
-import unittest
-import os
 import json
-
-from paste.deploy.loadwsgi import appconfig
-from pyramid.testing import DummyRequest
-from pyramid.httpexceptions import HTTPBadRequest
-from pyramid.compat import text_
+import os
+import unittest
 from copy import deepcopy
+from unittest.mock import MagicMock
+from unittest.mock import PropertyMock
 
-try:
-    from unittest.mock import Mock, patch, MagicMock, PropertyMock
-except:
-    from mock import Mock, patch, MagicMock, PropertyMock
+import responses
+from paste.deploy.loadwsgi import appconfig
+from pyramid.compat import text_
+from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.testing import DummyRequest
 
-from static_map_generator.views.views import RestView
 from static_map_generator.validators import ValidationFailure
 from static_map_generator.views.exceptions import internal_server_error
-import responses
-
+from static_map_generator.views.views import RestView
 
 settings = appconfig('config:' + os.path.join(os.path.dirname(__file__), 'test.ini'))
-with open(os.path.join(os.path.dirname(__file__), 'fixtures/grb_and_geojson.json'), 'rb') as f:
+with open(os.path.join(os.path.dirname(__file__), 'fixtures/grb_and_geojson.json'),
+          'rb') as f:
     grb_and_geojson = json.loads(text_(f.read()))
 
 
