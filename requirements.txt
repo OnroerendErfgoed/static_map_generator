@@ -29,4 +29,4 @@ redis==3.5.3
 pyramid_redis==0.1.4
 
 wsgicors==0.7.0
-mapnik==0.1
+mapnik==4.0.0
