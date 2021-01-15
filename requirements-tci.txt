@@ -37,5 +37,4 @@ responses==0.12.1
 # waitress
 waitress==1.4.4
 
-wsgicors==0.7.0
-mapnik==3.0.24
+mapnik==3.0.23
