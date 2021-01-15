@@ -1,11 +1,12 @@
 language: python
+dist: bionic
 python:
   - "3.6"
 env:
   - PROJECT=static_map_generator MAPNIK_VERSION=3.1.0 PYTHON_MAPNIK_COMMIT=a2c2a86eec954b42d7f00093da03807d0834b1b4 PYTHON=python
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y --no-install-recommends libboost-all-dev git tar unzip wget bzip2 build-essential autoconf libtool libxml2-dev libgeos-dev libgeos++-dev libpq-dev libbz2-dev libproj-dev munin-node munin protobuf-c-compiler libfreetype6-dev libtiff5-dev libicu-dev libgdal-dev libcairo2-dev libcairomm-1.0-dev apache2 apache2-dev libagg-dev liblua5.2-dev ttf-unifont lua5.1 liblua5.1-0-dev libharfbuzz-dev libboost-filesystem-dev libboost-program-options-dev libboost-python-dev libboost-regex-dev libboost-system-dev libboost-thread-dev
+  - sudo apt-get install -y --no-install-recommends libboost-all-dev git tar unzip wget bzip2 build-essential autoconf libtool libxml2-dev libgeos-dev libgeos++-dev libpq-dev libbz2-dev libproj-dev munin-node munin protobuf-c-compiler libfreetype6-dev libtiff5-dev libicu-dev libgdal-dev libcairo2-dev libcairomm-1.0-dev apache2 apache2-dev libagg-dev liblua5.2-dev ttf-unifont lua5.1 liblua5.1-0-dev libharfbuzz-dev
   - wget -c https://github.com/mapnik/mapnik/releases/download/v${MAPNIK_VERSION}/mapnik-v${MAPNIK_VERSION}.tar.bz2 -O - | tar -xj -C /tmp/
   - (cd /tmp/mapnik-v${MAPNIK_VERSION} && ${PYTHON} scons/scons.py configure)
   - (cd /tmp/mapnik-v${MAPNIK_VERSION} && sudo make JOBS=4 && sudo make install JOBS=4)
