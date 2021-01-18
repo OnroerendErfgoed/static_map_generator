@@ -1,13 +1,15 @@
-# -*- coding: utf-8 -*-
 import os
-from static_map_generator.generator import Generator
 import unittest
-import responses
 from copy import deepcopy
+
+import responses
+
+from static_map_generator.generator import Generator
+
 try:
     from unittest.mock import patch, call
 except:
-    from mock import patch, call
+    from unittest.mock import patch, call
 
 config = {
     "params": {
@@ -71,7 +73,8 @@ class UtilsTests(unittest.TestCase):
             with self.assertRaises(Exception):
                 Generator.generate_stream(config)
         self.assertEqual(log_mock.error.call_count, 2)
-        self.assertIn(call('Background wms could not be rendered'), log_mock.error.mock_calls)
+        self.assertIn(call('Background wms could not be rendered'),
+                      log_mock.error.mock_calls)
 
     @responses.activate
     def test_stream_geojson_error(self):
@@ -82,7 +85,8 @@ class UtilsTests(unittest.TestCase):
             with self.assertRaises(Exception):
                 Generator.generate_stream(config_json_error)
         self.assertEqual(log_mock.error.call_count, 2)
-        self.assertIn(call('Following layer could not be rendered: 0'), log_mock.error.mock_calls)
+        self.assertIn(call('Following layer could not be rendered: 0'),
+                      log_mock.error.mock_calls)
 
     @responses.activate
     def test_stream_text_error(self):

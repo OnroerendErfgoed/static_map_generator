@@ -1,4 +1,3 @@
-
 def merge_dicts(*dict_args):
     """
     Given any number of dicts, shallow copy and merge into a new dict,
@@ -22,13 +21,13 @@ def rescale_bbox(height, width, bbox):
     """
 
     x1, y1, x2, y2 = bbox
-    scale_image = float(height)/float(width)
-    scale_bbox = float(y2-y1)/float(x2-x1)
+    scale_image = float(height) / float(width)
+    scale_bbox = float(y2 - y1) / float(x2 - x1)
     if scale_image < scale_bbox:
-        x = (((y2-y1)/scale_image) - x2 + x1)/2
+        x = (((y2 - y1) / scale_image) - x2 + x1) / 2
         return [x1 - x, y1, x2 + x, y2]
     elif scale_image > scale_bbox:
-        y = ((scale_image * (x2-x1)) - y2 + y1)/2
+        y = ((scale_image * (x2 - x1)) - y2 + y1) / 2
         return [x1, y1 - y, x2, y2 + y]
     else:
         return bbox
@@ -41,11 +40,11 @@ def calculate_scale(map_scale, map_width):
     """
     image_width_meter = round(map_scale * float(map_width))
     scale_num_guess = str(int(round(image_width_meter * 0.2)))
-    scale_num = int(2 * round(float(int(scale_num_guess[0])) / 2)) * 10 ** (len(scale_num_guess[1:]))
+    scale_num = int(2 * round(float(int(scale_num_guess[0])) / 2)) * 10 ** (
+        len(scale_num_guess[1:]))
     scale_num = scale_num if scale_num else 1 * 10 ** (len(scale_num_guess[1:]))
     scale_width = round(scale_num / map_scale)
-    scale_label = "{} m".format(scale_num) if scale_num < 1000 else "{} km".format(scale_num/1000)
+    scale_label = f"{scale_num} m" if scale_num < 1000 else "{} km".format(
+        scale_num / 1000)
 
     return scale_width, scale_label
-
-

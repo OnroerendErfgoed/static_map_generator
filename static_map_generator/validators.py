@@ -1,9 +1,10 @@
-# -*- coding: utf-8 -*-
-import colander
-import rfc3987
-import mapnik
 import json
-from pyramid.compat import text_, long
+
+import colander
+import mapnik
+import rfc3987
+from pyramid.compat import long
+from pyramid.compat import text_
 
 
 class ValidationFailure(Exception):
@@ -24,7 +25,7 @@ def uri_validator(node, uri):
     :param uri: Uri to validate.
     """
     if not rfc3987.match(uri, rule='URI'):
-        raise colander.Invalid(node, '{0} is geen geldige URI.'.format(uri))
+        raise colander.Invalid(node, f'{uri} is geen geldige URI.')
 
 
 def geojson_validator(node, geojson_input):
@@ -35,14 +36,15 @@ def geojson_validator(node, geojson_input):
     :param geojson_input: Geojson to validate.
     """
     try:
-        geojson_for_mapnik = {"type": "Feature", "properties": {}, "geometry": {}, 'geometry': geojson_input}
+        geojson_for_mapnik = {"type": "Feature", "properties": {}, "geometry": {},
+                              'geometry': geojson_input}
         geojson_dump = json.dumps(geojson_for_mapnik)
         ctx = mapnik.Context()
         mapnik.Feature.from_geojson(geojson_dump, ctx)
     except Exception:
         raise colander.Invalid(
             node,
-            "Could not parse geojson {}".format(geojson_input)
+            f"Could not parse geojson {geojson_input}"
         )
 
 
@@ -58,7 +60,7 @@ def string_validator(node, value):
     except:
         raise colander.Invalid(
             node,
-            u"{} is not a valid string".format(value)
+            f"{value} is not a valid string"
         )
 
 
@@ -72,7 +74,7 @@ def number_validator(node, value):
     if not isinstance(value, (int, float, long)):
         raise colander.Invalid(
             node,
-            "{} is not a valid number".format(value)
+            f"{value} is not a valid number"
         )
 
 
@@ -105,7 +107,7 @@ def required_validator(param, type, node, cstruct, validator=None):
     if param not in cstruct:
         raise colander.Invalid(
             node,
-            "{0} is required for {1} configuration".format(param, type)
+            f"{param} is required for {type} configuration"
         )
     if validator is not None:
         validator(node, cstruct[param])
@@ -124,7 +126,7 @@ def optional_validator(param, default, node, cstruct, validator=None):
     cstruct[param] = cstruct[param] if param in cstruct else default
     if validator is not None:
         validator(node, cstruct[param])
-        
+
 
 class LayerSchemaNode(colander.MappingSchema):
     title = 'layer'
@@ -133,8 +135,8 @@ class LayerSchemaNode(colander.MappingSchema):
         return colander.Mapping(unknown='preserve')
 
     type = colander.SchemaNode(
-            colander.String(),
-            validator=colander.OneOf(['wms', 'geojson', 'text'])
+        colander.String(),
+        validator=colander.OneOf(['wms', 'geojson', 'text'])
     )
 
     def validator(self, node, cstruct):

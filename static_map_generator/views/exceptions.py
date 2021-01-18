@@ -1,8 +1,10 @@
-# -*- coding: utf-8 -*-
+import logging
 import sys
 
-import logging
-from pyramid.view import notfound_view_config, view_config, forbidden_view_config
+from pyramid.view import forbidden_view_config
+from pyramid.view import notfound_view_config
+from pyramid.view import view_config
+
 from static_map_generator.validators import ValidationFailure
 
 log = logging.getLogger(__name__)
@@ -22,8 +24,9 @@ def failed_validation(exc, request):
     log.debug(exc.msg)
     log.debug(exc.errors)
     request.response.status_int = 400
-    formated_errors = [' '.join(list(reversed(node.split('.')))).capitalize() + ': ' + exc.errors[node]
-                       for node in exc.errors]
+    formated_errors = [
+        ' '.join(list(reversed(node.split('.')))).capitalize() + ': ' + exc.errors[node]
+        for node in exc.errors]
     return {'message': exc.msg, 'errors': formated_errors}
 
 
@@ -49,4 +52,3 @@ def forbidden_view(exc, request):
     }
     request.response.status_int = 401
     return err
-

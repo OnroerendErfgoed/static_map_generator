@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 import os
-from static_map_generator.generator import Generator
 
+from static_map_generator.generator import Generator
 
 examples = [
     {
@@ -31,31 +30,31 @@ examples = [
 
 for example in examples:
     config_simple = {
-      "params": {
-        "width": 325,
-        "height": 500
-      },
-      "layers": [
-        {
-          "geojson": {
-            "coordinates": example["coordinates"],
-            "type": "Polygon"
-          },
-          "type": "geojson"
+        "params": {
+            "width": 325,
+            "height": 500
         },
-        {
-          "type": "text",
-          "text": "© GRB basiskaart, informatie Vlaanderen",
-          "gravity": "south_east",
-          "font_size": 3
-        },
-        {
+        "layers": [
+            {
+                "geojson": {
+                    "coordinates": example["coordinates"],
+                    "type": "Polygon"
+                },
+                "type": "geojson"
+            },
+            {
+                "type": "text",
+                "text": "© GRB basiskaart, informatie Vlaanderen",
+                "gravity": "south_east",
+                "font_size": 3
+            },
+            {
 
-          "type": "wms",
-          "url": "http://geoservices.informatievlaanderen.be/raadpleegdiensten/GRB-basiskaart-grijs/wms?",
-          "layers": "GRB_BSK_GRIJS"
-        }
-      ]
+                "type": "wms",
+                "url": "http://geoservices.informatievlaanderen.be/raadpleegdiensten/GRB-basiskaart-grijs/wms?",
+                "layers": "GRB_BSK_GRIJS"
+            }
+        ]
     }
 
     with open(os.path.join(os.path.dirname(__file__), example["name"]), 'wb') as f:

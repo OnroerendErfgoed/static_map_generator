@@ -1,16 +1,16 @@
 import unittest
-from static_map_generator.validators import (
-    uri_validator,
-    geojson_validator,
-    string_validator,
-    number_validator,
-    gravity_validator,
-    required_validator,
-    optional_validator,
-    ConfigSchemaNode,
-    ValidationFailure
-)
+
 from colander import Invalid
+
+from static_map_generator.validators import ConfigSchemaNode
+from static_map_generator.validators import ValidationFailure
+from static_map_generator.validators import geojson_validator
+from static_map_generator.validators import gravity_validator
+from static_map_generator.validators import number_validator
+from static_map_generator.validators import optional_validator
+from static_map_generator.validators import required_validator
+from static_map_generator.validators import string_validator
+from static_map_generator.validators import uri_validator
 
 config = {
     "params": {
@@ -44,7 +44,9 @@ config = {
                 'color': 'steelblue',
                 'opacity': 0.5,
                 'type': 'geojson',
-                'geojson':{'crs': {'type': 'name', 'properties': {'name': 'EPSG:31370'}}, 'type': 'MultiPoint', 'coordinates': [[103912.03, 192390.11],[103500, 192390.11]]},
+                'geojson': {'crs': {'type': 'name', 'properties': {'name': 'EPSG:31370'}},
+                            'type': 'MultiPoint',
+                            'coordinates': [[103912.03, 192390.11], [103500, 192390.11]]},
             }
         ]
 }
@@ -80,7 +82,10 @@ class ValidateParamsTests(unittest.TestCase):
         self.assertRaises(Invalid, uri_validator, test_node, 'test')
 
     def test_geojson_validator(self):
-        geojson_validator(test_node, {'crs': {'type': 'name', 'properties': {'name': 'EPSG:31370'}}, 'type': 'MultiPoint', 'coordinates': [[103912.03, 192390.11],[103500, 192390.11]]})
+        geojson_validator(test_node,
+                          {'crs': {'type': 'name', 'properties': {'name': 'EPSG:31370'}},
+                           'type': 'MultiPoint',
+                           'coordinates': [[103912.03, 192390.11], [103500, 192390.11]]})
         self.assertRaises(Invalid, geojson_validator, test_node, 'test')
 
     def test_number_validator(self):
@@ -93,8 +98,10 @@ class ValidateParamsTests(unittest.TestCase):
 
     def test_optional_validator(self):
         optional_validator('test', 'value', test_node, {}, string_validator)
-        self.assertRaises(Invalid, optional_validator, 'test', 'value', test_node, {'test': 'value'}, number_validator)
+        self.assertRaises(Invalid, optional_validator, 'test', 'value', test_node,
+                          {'test': 'value'}, number_validator)
 
     def test_required_validator(self):
         required_validator('test', 'text', test_node, {'test': 'value'}, string_validator)
-        self.assertRaises(Invalid, required_validator, 'test', 'text', test_node, {'invalid': 'value'}, string_validator)
+        self.assertRaises(Invalid, required_validator, 'test', 'text', test_node,
+                          {'invalid': 'value'}, string_validator)

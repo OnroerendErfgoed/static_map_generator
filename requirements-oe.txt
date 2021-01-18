@@ -1,3 +1,0 @@
-# authentication
-oeauth==1.2.0
-pyramid_oeauth==1.4.0

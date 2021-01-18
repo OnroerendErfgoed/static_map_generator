@@ -1,11 +1,13 @@
+import base64
 import logging
 import os
-import tempdir
-import mapnik
-import base64
-from static_map_generator.renderer import Renderer
-from static_map_generator.utils import merge_dicts, rescale_bbox
 
+import mapnik
+import tempdir
+
+from static_map_generator.renderer import Renderer
+from static_map_generator.utils import merge_dicts
+from static_map_generator.utils import rescale_bbox
 
 log = logging.getLogger(__name__)
 
@@ -21,7 +23,8 @@ class Generator:
         """
 
         # generate map
-        mapnik_map = mapnik.Map(config['params']['width'], config['params']['height'], '+init=epsg:31370')
+        mapnik_map = mapnik.Map(config['params']['width'], config['params']['height'],
+                                '+init=epsg:31370')
         mapnik_map.background = mapnik.Color('white')
 
         s = mapnik.Style()
@@ -38,7 +41,8 @@ class Generator:
         s = mapnik.Style()
         r = mapnik.Rule()
         point_symbolizer = mapnik.PointSymbolizer()
-        point_symbolizer.file = os.path.abspath(os.path.dirname(__file__)) + '/fixtures/pointer.svg'
+        point_symbolizer.file = os.path.abspath(
+            os.path.dirname(__file__)) + '/fixtures/pointer.svg'
         r.symbols.append(point_symbolizer)
         s.rules.append(r)
         mapnik_map.append_style('point', s)
@@ -68,16 +72,19 @@ class Generator:
             bbox_layers = [extend.minx, extend.miny, extend.maxx, extend.maxy]
         else:
             bbox_layers = config['params']['bbox']
-            extend = mapnik.Box2d(bbox_layers[0], bbox_layers[1], bbox_layers[2], bbox_layers[3])
+            extend = mapnik.Box2d(bbox_layers[0], bbox_layers[1], bbox_layers[2],
+                                  bbox_layers[3])
         mapnik_map.zoom_to_box(extend)
 
         # render background
-        background_layers = [layer for layer in config['layers'] if layer['type'] == 'wms']
+        background_layers = [layer for layer in config['layers'] if
+                             layer['type'] == 'wms']
         background = background_layers[0] if len(background_layers) > 0 else None
         if background:
             # printing map to image works differently for wms in comparison to Mapnik rendering
             # rescaling of the bbox is necessary to avoid deformations of the background image
-            bbox = rescale_bbox(config['params']['height'], config['params']['width'], bbox_layers)
+            bbox = rescale_bbox(config['params']['height'], config['params']['width'],
+                                bbox_layers)
             config['params']['bbox'] = bbox
             mapnik_map.zoom_to_box(mapnik.Box2d(bbox[0], bbox[1], bbox[2], bbox[3]))
             # rendering the background image
@@ -85,7 +92,8 @@ class Generator:
             kwargs = merge_dicts(config['params'], background)
             try:
                 rendered_layer = renderer.render(**kwargs)
-                background = os.path.join(str(config['params']['tempdir']), "background.png")
+                background = os.path.join(str(config['params']['tempdir']),
+                                          "background.png")
                 with open(background, 'wb') as im:
                     im.write(rendered_layer)
                 mapnik_map.background_image = background
