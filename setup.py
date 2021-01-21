@@ -14,7 +14,6 @@ requires = [
     'pyramid',
     'tempdir',
     'Wand',
-    'argparse',
     'requests',
     'colander',
     'rfc3987'
