@@ -7,6 +7,8 @@ before_install:
   - sudo apt-get update
   - sudo apt-get install libmapnik3.0 libmapnik-dev mapnik-utils python3-mapnik libmagickwand-dev
 install:
+  - pip freeze
+  - pip3 freeze
   - pip install -r requirements-tci.txt
   - python setup.py develop
 script:
