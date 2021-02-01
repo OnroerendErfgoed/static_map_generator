@@ -17,7 +17,7 @@ pyramid_debugtoolbar==4.9
 Sphinx==3.4.3
 sphinxcontrib-httpdomain==1.7.0
 sphinx_rtd_theme==0.5.1
-sphinxcontrib-plantuml==0.7
+sphinxcontrib-plantuml==0.19
 
 # waitress
 waitress==1.0.2
