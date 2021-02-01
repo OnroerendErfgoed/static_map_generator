@@ -23,7 +23,7 @@ redis==2.10.6
 pyramid_redis==0.1.4
 
 # pyramid
-pyramid_debugtoolbar==4.3
+pyramid_debugtoolbar==4.9
 
 # testing
 pytest==6.2.2
