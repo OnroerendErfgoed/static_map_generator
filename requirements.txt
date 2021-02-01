@@ -9,7 +9,7 @@ pyramid_rewrite==0.2
 # cors
 wsgicoers==0.8.2
 
-wand==0.4.4
+wand==0.6.5
 requests==2.21.0
 tempdir==0.7.1
 
