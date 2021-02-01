@@ -29,7 +29,7 @@ pyramid_debugtoolbar==4.3
 pytest==6.2.2
 py==1.10.0
 pytest-cov==2.11.1
-coveralls==1.2.0
+coveralls==3.0.0
 webtest==2.0.28
 mock==2.0.0
 responses==0.7.0
