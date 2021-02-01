@@ -7,7 +7,7 @@ pyramid_rewrite==0.2
 wsgicoers==0.8.2
 
 wand==0.6.5
-requests==2.18.4
+requests==2.25.1
 tempdir==0.7.1
 
 # validation
