@@ -22,7 +22,7 @@ oeauth==1.2.0
 pyramid_oeauth==1.4.0
 
 # caching
-dogpile.cache==0.5.7
+dogpile.cache==1.1.2
 dcextensions==0.0.1
 
 # redis
