@@ -11,7 +11,7 @@ mock==4.0.3
 responses==0.12.1
 
 # pyramid
-pyramid_debugtoolbar==4.3
+pyramid_debugtoolbar==4.9
 
 # documentation
 Sphinx==1.6.4
