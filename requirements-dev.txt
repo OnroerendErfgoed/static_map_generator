@@ -14,7 +14,7 @@ responses==0.12.1
 pyramid_debugtoolbar==4.9
 
 # documentation
-Sphinx==1.6.4
+Sphinx==3.4.3
 sphinxcontrib-httpdomain==1.4.0
 sphinx_rtd_theme==0.1.9
 sphinxcontrib-plantuml==0.7
