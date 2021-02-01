@@ -15,7 +15,7 @@ colander==1.8.3
 rfc3987==1.3.8
 
 # caching
-dogpile.cache==0.5.7
+dogpile.cache==1.1.2
 dcextensions==0.0.1
 
 # redis
