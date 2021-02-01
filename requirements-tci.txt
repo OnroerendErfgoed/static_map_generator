@@ -32,7 +32,7 @@ pytest-cov==2.11.1
 coveralls==3.0.0
 webtest==2.0.35
 mock==4.0.3
-responses==0.7.0
+responses==0.12.1
 
 # waitress
 waitress==1.0.2
